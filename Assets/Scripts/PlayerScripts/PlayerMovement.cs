@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement2 : MonoBehaviour
 {
     public float moveSpeed = 5f;
     private Rigidbody2D rb;
@@ -20,15 +20,15 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Input.GetKey(down))
         {
-
+            rb.linearVelocityY = -moveSpeed;
         }
         else if (Input.GetKey(left))
         {
-
+            rb.linearVelocityX = -moveSpeed;
         }
         else if (Input.GetKey(right))
         {
-
+            rb.linearVelocityX = moveSpeed;
         }
         else
         {
