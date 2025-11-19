@@ -3,8 +3,14 @@ using UnityEngine.SceneManagement;
 
 public class StartMenu : MonoBehaviour
 {
-  public void OnStartButtonPressed()
+    public void OnStartButtonPressed()
     {
-    SceneManager.LoadScene("MainLevel");
+        SceneManager.LoadScene("MainLevel");
+    }
+
+    public void OnQuitButtonPressed()
+    {
+        Application.Quit();
+        Debug.Log("Henry. I have to quit. Haha.");
     }
 }
