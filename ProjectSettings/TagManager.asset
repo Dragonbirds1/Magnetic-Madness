@@ -3,15 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - MapLayout
+  - FloorTiles
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Wall
+  - 
   - Water
   - UI
-  - IsBlock
+  - 
   - 
   - 
   - 
@@ -40,6 +42,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: MapLayout
+    uniqueID: 53616403
+    locked: 0
+  - name: FloorTiles
+    uniqueID: 83095075
     locked: 0
   m_RenderingLayers:
   - Default
