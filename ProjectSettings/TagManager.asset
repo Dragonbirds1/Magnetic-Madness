@@ -49,5 +49,8 @@ TagManager:
   - name: FloorTiles
     uniqueID: 83095075
     locked: 0
+  - name: puzzle lay out pushing box
+    uniqueID: 668214373
+    locked: 0
   m_RenderingLayers:
   - Default
