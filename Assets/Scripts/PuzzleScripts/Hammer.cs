@@ -15,6 +15,7 @@ public class Hammer : MonoBehaviour
     public bool hasHit = false;
     public GameObject Mole1, Mole2, Mole3, Mole4, Mole5, Mole6;
     public float hammerRange = 0.5f;
+    public WackAMole wackAMole;
 
     void Start()
     {
@@ -34,6 +35,43 @@ public class Hammer : MonoBehaviour
             if (Vector2.Distance(transform.position, Mole1.transform.position) <= hammerRange)
             {
                 Mole1.SetActive(false);
+                wackAMole.addScore();
+                //wackAMole.Hole1Timer = 0.0f;
+            }
+
+            if (Vector2.Distance(transform.position, Mole2.transform.position) <= hammerRange)
+            {
+                Mole2.SetActive(false);
+                wackAMole.addScore();
+                //wackAMole.Hole2Timer = 0.0f;
+            }
+
+            if (Vector2.Distance(transform.position, Mole3.transform.position) <= hammerRange)
+            {
+                Mole3.SetActive(false);
+                wackAMole.addScore();
+                //wackAMole.Hole3Timer = 0.0f;
+            }
+
+            if (Vector2.Distance(transform.position, Mole4.transform.position) <= hammerRange)
+            {
+                Mole4.SetActive(false);
+                wackAMole.addScore();
+                //wackAMole.Hole4Timer = 0.0f;
+            }
+
+            if (Vector2.Distance(transform.position, Mole5.transform.position) <= hammerRange)
+            {
+                Mole5.SetActive(false);
+                wackAMole.addScore();
+                //wackAMole.Hole5Timer = 0.0f;
+            }
+
+            if (Vector2.Distance(transform.position, Mole6.transform.position) <= hammerRange)
+            {
+                Mole6.SetActive(false);
+                wackAMole.addScore();
+                //wackAMole.Hole6Timer = 0.0f;
             }
         }
     }
@@ -53,6 +91,8 @@ public class Hammer : MonoBehaviour
     {
         moleHit.GetHit();
     }
+
+   
 
     void OnDrawGizmos()
     {
