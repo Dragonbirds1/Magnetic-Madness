@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
   m_Name: demo fun house rule
   m_EditorClassIdentifier: 
-  m_DefaultSprite: {fileID: -127092384, guid: 0480dc591e9661548a8fdc59c530c022, type: 3}
+  m_DefaultSprite: {fileID: 1455675126, guid: 76b63cc7617f7d24abd79e58661a90e1, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules:
