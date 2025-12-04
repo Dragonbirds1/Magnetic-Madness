@@ -32,42 +32,41 @@ public class Hammer : MonoBehaviour
 
         if (Input.GetKeyDown(hitKey))
         {
-            if (Vector2.Distance(transform.position, Mole1.transform.position) <= hammerRange)
+            if (Vector2.Distance(transform.position, Mole1.transform.position) <= hammerRange && Mole1.activeSelf)
             {
                 Mole1.SetActive(false);
                 wackAMole.addScore();
-                //wackAMole.Hole1Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole2.transform.position) <= hammerRange)
+            if (Vector2.Distance(transform.position, Mole2.transform.position) <= hammerRange && Mole2.activeSelf)
             {
                 Mole2.SetActive(false);
                 wackAMole.addScore();
                 //wackAMole.Hole2Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole3.transform.position) <= hammerRange)
+            if (Vector2.Distance(transform.position, Mole3.transform.position) <= hammerRange && Mole3.activeSelf)
             {
                 Mole3.SetActive(false);
                 wackAMole.addScore();
                 //wackAMole.Hole3Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole4.transform.position) <= hammerRange)
+            if (Vector2.Distance(transform.position, Mole4.transform.position) <= hammerRange && Mole4.activeSelf)
             {
                 Mole4.SetActive(false);
                 wackAMole.addScore();
                 //wackAMole.Hole4Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole5.transform.position) <= hammerRange)
+            if (Vector2.Distance(transform.position, Mole5.transform.position) <= hammerRange && Mole5.activeSelf)
             {
                 Mole5.SetActive(false);
                 wackAMole.addScore();
                 //wackAMole.Hole5Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole6.transform.position) <= hammerRange)
+            if (Vector2.Distance(transform.position, Mole6.transform.position) <= hammerRange && Mole6.activeSelf)
             {
                 Mole6.SetActive(false);
                 wackAMole.addScore();

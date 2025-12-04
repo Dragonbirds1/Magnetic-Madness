@@ -10,6 +10,7 @@ public class WackAMole: MonoBehaviour
     public KeyCode keyboardStartGameKey = KeyCode.Space;
     public KeyCode ControllerStartGameKey = KeyCode.JoystickButton3;
     public KeyCode keyboardHammerKey = KeyCode.Mouse0;
+    public KeyCode LeaveWackAMoleKey;
     bool isAtGame = false;
     public float rangeToStartGame = 2.0f;
     public float moleVisibleDuration = 1.5f;
@@ -34,9 +35,13 @@ public class WackAMole: MonoBehaviour
     public float waitTimeBetweenMoles;
     public TMP_Text Score;
     public TMP_Text YourScore, YourScore2, ScoreNeeded, ScoreNeeded2;
+    public GameObject YourSc, YourSc2, ScoreNe, ScoreNe2, Win, Loose;
     public GameObject ScoreBoard, TMP;
-    bool SpawnText = false;
-    public float TimeBetweenTextSpawn = 0.0f;
+    bool SpawnText;
+    public float TimeBetweenTextSpawn;
+    public bool Playing = false;
+    public bool AddScore = false;
+    public GameObject Music, Drumroll;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -59,6 +64,7 @@ public class WackAMole: MonoBehaviour
         currentMoleInHole3.SetActive(false);
         currentMoleInHole4.SetActive(false);
         currentMoleInHole5.SetActive(false);
+        // OH MY GOD THIS IS LINE 67!!!!!!
         currentMoleInHole6.SetActive(false);
         triggerValue = Gamepad.current.rightTrigger.ReadValue();
         gamePopUp.SetActive(false);
@@ -81,6 +87,57 @@ public class WackAMole: MonoBehaviour
         {
             isAtGame = false;
         }
+
+        if (SpawnText)
+        {
+            TimeBetweenTextSpawn += Time.deltaTime;
+
+            if (TimeBetweenTextSpawn >= 1.0f)
+            {
+                YourSc.SetActive(true);
+            }
+            if (TimeBetweenTextSpawn >= 2.0f)
+            {
+                YourSc2.SetActive(true);
+            }
+            if (TimeBetweenTextSpawn >= 3.0f)
+            {
+                ScoreNe.SetActive(true);
+            }
+            if (TimeBetweenTextSpawn >= 4.0f)
+            {
+                ScoreNe2.SetActive(true);
+            }
+            if (TimeBetweenTextSpawn >= 5.4f)
+            {
+                SpawnText = false;
+                TimeBetweenTextSpawn = 0.0f;
+                if (Input.GetKeyDown(LeaveWackAMoleKey))
+                {
+                    Cursor.visible = true;
+                    YourSc.SetActive(false);
+                    YourSc2.SetActive(false);
+                    ScoreNe.SetActive(false);
+                    ScoreNe2.SetActive(false);
+                    TMP.SetActive(false);
+                    ScoreBoard.SetActive(false);
+                    Win.SetActive(false);
+                    Loose.SetActive(false);
+                    gamePopUp.SetActive(false);
+                    hammerPrefab.SetActive(false);
+                    wackAMoleGame.SetActive(false);
+                }
+                if (score >= 10)
+                {
+                    Winner();
+                }
+                else if (score < 10)
+                {
+                    Looser();
+                }
+            }
+        }
+
         if (isMoleAbleToSpawn)
         {
             
@@ -184,33 +241,15 @@ public class WackAMole: MonoBehaviour
             }
         }
 
-        if (SpawnText)
-        {
-            TimeBetweenTextSpawn += Time.deltaTime;
-            if (TimeBetweenTextSpawn >= 0.5f)
-            {
-                YourScore.gameObject.SetActive(true);
-            }
-            if (TimeBetweenTextSpawn >= 1.0f)
-            {
-                YourScore2.gameObject.SetActive(true);
-            }
-            if (TimeBetweenTextSpawn >= 1.5f)
-            {
-                ScoreNeeded.gameObject.SetActive(true);
-            }
-            if (TimeBetweenTextSpawn >= 2.0f)
-            {
-                ScoreNeeded2.gameObject.SetActive(true);
-                SpawnText = false;
-                TimeBetweenTextSpawn = 0.0f;
-            }
-        }
+        
 
     }
 
     public void StartGame()
     {
+        Playing = true;
+        Music.SetActive(true);
+        Drumroll.SetActive(false);
         Cursor.visible = false;
         isMoleAbleToSpawn = true;
         isGameActive = true;
@@ -221,6 +260,9 @@ public class WackAMole: MonoBehaviour
     }
     public void EndGame()
     {
+        Playing = false;
+        Music.SetActive(false);
+        Drumroll.SetActive(true);
         SpawnText = true;
         isGameActive = false;
         isMoleAbleToSpawn = false;
@@ -233,15 +275,15 @@ public class WackAMole: MonoBehaviour
         YourScore2.text = score.ToString();
 
         
-        if (score >= 10)
-        {
-            Debug.Log("Wack A Mole Completed!");
-            // Trigger puzzle completion logic here
-        }
-        else
-        {
-            Debug.Log("Wack A Mole Failed. Score: " + score);
-        }
+        //if (score >= 10)
+        //{
+           // Debug.Log("Wack A Mole Completed!");
+            //Trigger puzzle completion logic here
+        //}
+       //else
+       //{
+            //Debug.Log("Wack A Mole Failed. Score: " + score);
+        //}
     }
 
     void SpawnMole()
@@ -312,7 +354,26 @@ public class WackAMole: MonoBehaviour
 
     public void addScore()
     {
-        score++;
+        if (Playing == true)
+        {
+            score++;
+        }
+        else if (Playing == false)
+        {
+            return;
+        }
+    }
+
+    public void Winner()
+    {
+        Debug.Log("Wack A Mole Completed!");
+        Win.SetActive(true);
+    }
+
+    public void Looser()
+    {
+        Debug.Log("Wack A Mole Failed. Score: " + score);
+        Loose.SetActive(true);
     }
 
     private void OnDrawGizmos()
