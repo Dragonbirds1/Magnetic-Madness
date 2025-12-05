@@ -14,6 +14,7 @@ public class PlayerAbility : MonoBehaviour
     public float abilityCooldown = 2f;
     private float lastAbilityTime = -Mathf.Infinity;
     private SpriteRenderer sr;
+    public WackAMole wackAMole;
 
     private void Awake()
     {
@@ -39,32 +40,39 @@ public class PlayerAbility : MonoBehaviour
 
     public void UseAbility(InputAction.CallbackContext ctx)
     {
-        if (ctx.canceled)
-            return;
-
-        if (Time.time - lastAbilityTime < abilityCooldown)
+        if (wackAMole.freezeGameplay == false)
         {
-            Debug.Log("Ability is on cooldown.");
-            return;
-        }
+            if (ctx.canceled)
+                return;
 
-        RaycastHit2D enemyHit = Physics2D.CircleCast(transform.position, radius, Vector2.zero, 0f, block);
-        if (enemyHit) // If something is hit within the radius
-        {
-            RaycastHit2D wallHit = Physics2D.Linecast(transform.position, enemyHit.transform.position, wall);
-
-            // If there are no obstacles between the player and the hit object and it has a Rigidbody2D
-            if (!wallHit && enemyHit.collider.TryGetComponent(out Rigidbody2D hitRigidbody))
+            if (Time.time - lastAbilityTime < abilityCooldown)
             {
-                Vector2 direction = (transform.position - hitRigidbody.transform.position).normalized;
-                hitRigidbody.AddForce(direction * currentForce, ForceMode2D.Impulse);
-                Debug.Log("Pull ability used on " + enemyHit.collider.name);
-                lastAbilityTime = Time.time;
+                Debug.Log("Ability is on cooldown.");
+                return;
+            }
+
+            RaycastHit2D enemyHit = Physics2D.CircleCast(transform.position, radius, Vector2.zero, 0f, block);
+            if (enemyHit) // If something is hit within the radius
+            {
+                RaycastHit2D wallHit = Physics2D.Linecast(transform.position, enemyHit.transform.position, wall);
+
+                // If there are no obstacles between the player and the hit object and it has a Rigidbody2D
+                if (!wallHit && enemyHit.collider.TryGetComponent(out Rigidbody2D hitRigidbody))
+                {
+                    Vector2 direction = (transform.position - hitRigidbody.transform.position).normalized;
+                    hitRigidbody.AddForce(direction * currentForce, ForceMode2D.Impulse);
+                    Debug.Log("Pull ability used on " + enemyHit.collider.name);
+                    lastAbilityTime = Time.time;
+                }
+            }
+            else
+            {
+                Debug.Log("No valid target in range for pull ability.");
             }
         }
-        else
+        else if (wackAMole.freezeGameplay == true)
         {
-            Debug.Log("No valid target in range for pull ability.");
+            return;
         }
     }
 

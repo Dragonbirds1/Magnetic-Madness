@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      robo sprites_0: -3821377237700174455
+      robo sprites_1: -6917097796352380168
+      robo sprites_2: 4544535498420349608
+      robo sprites_3: 4719385344865981516
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

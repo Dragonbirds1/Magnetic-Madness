@@ -42,6 +42,12 @@ public class WackAMole: MonoBehaviour
     public bool Playing = false;
     public bool AddScore = false;
     public GameObject Music, Drumroll;
+    public GameObject Camera;
+    public GameObject Player1Cam, Player2Cam;
+    bool letsGoBack = false;
+    public GameObject Boarder;
+    bool canToggleGame = true;
+    public bool freezeGameplay = false;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -64,7 +70,6 @@ public class WackAMole: MonoBehaviour
         currentMoleInHole3.SetActive(false);
         currentMoleInHole4.SetActive(false);
         currentMoleInHole5.SetActive(false);
-        // OH MY GOD THIS IS LINE 67!!!!!!
         currentMoleInHole6.SetActive(false);
         triggerValue = Gamepad.current.rightTrigger.ReadValue();
         gamePopUp.SetActive(false);
@@ -73,17 +78,49 @@ public class WackAMole: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(player.transform.position, transform.position) <= rangeToStartGame || Vector3.Distance(player2.transform.position, transform.position) <= rangeToStartGame)
+        if (letsGoBack)
         {
-            isAtGame = true;
-            if (isAtGame && (Input.GetKeyDown(keyboardStartGameKey) || Input.GetKeyDown(ControllerStartGameKey))) // Gamepad.current.rightTrigger.isPressed
+            if (Input.GetKeyDown(LeaveWackAMoleKey))
             {
-                Debug.Log("Wack A Mole Pop Up Activated");
-                //StartGame();
-                gamePopUp.SetActive(true);
+                freezeGameplay = false;
+                score = 0;
+                canToggleGame = true;
+                Cursor.visible = true;
+                Camera.SetActive(false);
+                Player1Cam.SetActive(true);
+                Player2Cam.SetActive(true);
+                YourSc.SetActive(false);
+                YourSc2.SetActive(false);
+                ScoreNe.SetActive(false);
+                ScoreNe2.SetActive(false);
+                TMP.SetActive(false);
+                ScoreBoard.SetActive(false);
+                Win.SetActive(false);
+                Loose.SetActive(false);
+                hammerPrefab.SetActive(false);
+                Boarder.SetActive(true);
+                letsGoBack = false;
             }
         }
-        else
+
+        if (canToggleGame)
+        {
+            if (Vector3.Distance(player.transform.position, transform.position) <= rangeToStartGame || Vector3.Distance(player2.transform.position, transform.position) <= rangeToStartGame)
+            {
+                isAtGame = true;
+                if (isAtGame && (Input.GetKeyDown(keyboardStartGameKey) || Input.GetKeyDown(ControllerStartGameKey))) // Gamepad.current.rightTrigger.isPressed
+                {
+                    Debug.Log("Wack A Mole Pop Up Activated");
+                    //StartGame();
+                    gamePopUp.SetActive(true);
+                }
+            }
+            else
+            {
+                isAtGame = false;
+            }
+        }
+        else if (canToggleGame == false)
         {
             isAtGame = false;
         }
@@ -112,21 +149,7 @@ public class WackAMole: MonoBehaviour
             {
                 SpawnText = false;
                 TimeBetweenTextSpawn = 0.0f;
-                if (Input.GetKeyDown(LeaveWackAMoleKey))
-                {
-                    Cursor.visible = true;
-                    YourSc.SetActive(false);
-                    YourSc2.SetActive(false);
-                    ScoreNe.SetActive(false);
-                    ScoreNe2.SetActive(false);
-                    TMP.SetActive(false);
-                    ScoreBoard.SetActive(false);
-                    Win.SetActive(false);
-                    Loose.SetActive(false);
-                    gamePopUp.SetActive(false);
-                    hammerPrefab.SetActive(false);
-                    wackAMoleGame.SetActive(false);
-                }
+                letsGoBack = true;
                 if (score >= 10)
                 {
                     Winner();
@@ -236,6 +259,7 @@ public class WackAMole: MonoBehaviour
 
             if (gameDuration <= 0.0f)
             {
+                gameDuration = 30.0f;
                 EndGame();
                 
             }
@@ -247,6 +271,8 @@ public class WackAMole: MonoBehaviour
 
     public void StartGame()
     {
+        freezeGameplay = true;
+        canToggleGame = false;
         Playing = true;
         Music.SetActive(true);
         Drumroll.SetActive(false);
@@ -260,6 +286,13 @@ public class WackAMole: MonoBehaviour
     }
     public void EndGame()
     {
+        waitTimeBetweenMoles = 0.0f;
+        currentMoleInHole1.SetActive(false);
+        currentMoleInHole2.SetActive(false);
+        currentMoleInHole3.SetActive(false);
+        currentMoleInHole4.SetActive(false);
+        currentMoleInHole5.SetActive(false);
+        currentMoleInHole6.SetActive(false);
         Playing = false;
         Music.SetActive(false);
         Drumroll.SetActive(true);

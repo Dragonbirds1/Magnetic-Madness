@@ -4,12 +4,20 @@ public class AbilitySwap : MonoBehaviour
 {
     public static PlayerAbility Player1Object, Player2Object;
     public KeyCode swapKey, swapKey2;
+    public WackAMole wackAMole;
     
     void Update()
     {
-        if (Input.GetKeyDown(swapKey) || Input.GetKeyDown(swapKey2))
+        if (wackAMole.freezeGameplay == false)
         {
-            SwapAbilities();
+            if (Input.GetKeyDown(swapKey) || Input.GetKeyDown(swapKey2))
+            {
+                SwapAbilities();
+            }
+        }
+        else if (wackAMole.freezeGameplay == true)
+        {
+            return;
         }
     }
 

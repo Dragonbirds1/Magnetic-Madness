@@ -32,6 +32,7 @@ public class AIEnemyMovement : MonoBehaviour
     public GameObject sleepEye, sleepEye2;
     public float timeTillDash = 2.0f;
     public float dashTime = 1.0f;
+    public WackAMole wackAMole;
 
 
 
@@ -48,64 +49,71 @@ public class AIEnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (sleepTimeChange)
+        if (wackAMole.freezeGameplay == false)
         {
-            sleepTime -= Time.deltaTime;
-        }
-        else if (!sleepTimeChange)
-        {
-            patrol = true;
-        }
-        if (sleepTime <= 0)
-        { 
-            sleepTimeChange = false;
-            sleepEye.SetActive(false);
-            sleepEye2.SetActive(false);
-            randomAction = Random.Range(0f, 10f);
-            sleepTime = 3.0f;
-        }
-        if (patrol2 == false)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, chaseSpeed * Time.deltaTime);
-            dash();
-            chaseTime -= Time.deltaTime;
-        }
-        if (patrol3 == false)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, player2.transform.position, chaseSpeed * Time.deltaTime);
-            dash();
-            chaseTime -= Time.deltaTime;
-        }
-        if (chaseTime <= 0)
-        {
-            isChasing = false;
-            patrol = true;
-            patrol2 = true;
-            patrol3 = true;
-            chaseTime = 5;
-        }
-        if (patrol)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, speed * Time.deltaTime);
-            if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.1f)
+            if (sleepTimeChange)
             {
-                if (randomAction <= 5f)
+                sleepTime -= Time.deltaTime;
+            }
+            else if (!sleepTimeChange)
+            {
+                patrol = true;
+            }
+            if (sleepTime <= 0)
+            {
+                sleepTimeChange = false;
+                sleepEye.SetActive(false);
+                sleepEye2.SetActive(false);
+                randomAction = Random.Range(0f, 10f);
+                sleepTime = 3.0f;
+            }
+            if (patrol2 == false)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, player.transform.position, chaseSpeed * Time.deltaTime);
+                dash();
+                chaseTime -= Time.deltaTime;
+            }
+            if (patrol3 == false)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, player2.transform.position, chaseSpeed * Time.deltaTime);
+                dash();
+                chaseTime -= Time.deltaTime;
+            }
+            if (chaseTime <= 0)
+            {
+                isChasing = false;
+                patrol = true;
+                patrol2 = true;
+                patrol3 = true;
+                chaseTime = 5;
+            }
+            if (patrol)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, speed * Time.deltaTime);
+                if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.1f)
                 {
-                    sleeping();
-                    
-                }
-                else if (randomAction > 5f && randomAction <= 10f)
-                {
-                    waitTime -= Time.deltaTime;
-                if (waitTime <= 0)
-                {
-                    currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count;
-                    Search();
-                    Change();
-                    waitTime = 3;
+                    if (randomAction <= 5f)
+                    {
+                        sleeping();
+
+                    }
+                    else if (randomAction > 5f && randomAction <= 10f)
+                    {
+                        waitTime -= Time.deltaTime;
+                        if (waitTime <= 0)
+                        {
+                            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count;
+                            Search();
+                            Change();
+                            waitTime = 3;
+                        }
                     }
                 }
             }
+        }
+        else if (wackAMole.freezeGameplay == true)
+        {
+            return;
         }
     }
     void Search() // Search for player within detection range
