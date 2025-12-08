@@ -20,6 +20,7 @@ TagManager:
   - Button0
   - ButtonEnter
   - ButtonClear
+  - enviorment
   layers:
   - Default
   - TransparentFX
@@ -68,6 +69,12 @@ TagManager:
     locked: 0
   - name: players
     uniqueID: 563213827
+    locked: 0
+  - name: enviorment
+    uniqueID: 3576279801
+    locked: 0
+  - name: pipes
+    uniqueID: 2628444871
     locked: 0
   m_RenderingLayers:
   - Default
