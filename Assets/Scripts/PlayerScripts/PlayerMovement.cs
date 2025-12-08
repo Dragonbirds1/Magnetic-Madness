@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        
     }
 
     public void Move(InputAction.CallbackContext ctx)

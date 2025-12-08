@@ -5602,9 +5602,37 @@ PrefabInstance:
       propertyPath: block.m_Bits
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 3309053056353883317, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_Size.x
+      value: 0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3309053056353883317, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_Size.y
+      value: 0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3309053056353883317, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2052892126, guid: 1d328eb574259d744ab4083c9ed2c70c, type: 3}
+    - target: {fileID: 3309053056353883317, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3309053056353883317, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3309053056353883317, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3309053056353883317, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.size
-      value: 16
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[1].m_ActionId
@@ -5636,39 +5664,63 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[8].m_ActionId
-      value: 32b35790-4ed0-4e9a-aa41-69ac6d629449
+      value: f314268e-4ad3-4e9a-b466-af00291d10e3
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_ActionId
-      value: 3c7022bf-7922-4f7c-a998-c437916075ad
+      value: 78125ca2-2a87-4b49-a877-8c3ac5e00060
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_ActionId
-      value: 44b200b1-1557-4083-816c-b22cbdf77ddf
+      value: 0239be38-7053-4c5b-abae-c91d760205ad
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[11].m_ActionId
-      value: dad70c86-b58c-4b17-88ad-f5e53adf419e
+      value: e5bda5cc-bc5d-435b-bab9-a46ec339ed69
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_ActionId
-      value: 0489e84a-4833-4c40-bfae-cea84b696689
+      value: 053f73de-6057-4c2f-80fa-6479d73cf701
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[13].m_ActionId
-      value: 24908448-c609-4bc3-a128-ea258674378a
+      value: b9a0515b-2738-4624-9699-0b6692de73c8
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[14].m_ActionId
-      value: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
+      value: a096894d-3480-4e10-b429-7271d3f91089
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[15].m_ActionId
-      value: f314268e-4ad3-4e9a-b466-af00291d10e3
+      value: 61bf07f9-7d9a-4660-8a83-3fda4b21610a
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[16].m_ActionId
-      value: f314268e-4ad3-4e9a-b466-af00291d10e3
+      value: c0967e4c-2e7f-4436-90cb-84361294170e
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[17].m_ActionId
+      value: 93abd131-fa46-43e6-9eeb-12de477df92b
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[18].m_ActionId
+      value: 2187102f-e8c5-45ae-8d0d-317cf143dbb9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[19].m_ActionId
+      value: e40e6164-4104-4910-a6e0-bc6b81dd0a84
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[20].m_ActionId
+      value: 5817de3c-851e-4968-8e8e-0614d3df1c7c
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[21].m_ActionId
+      value: 3f3af2d6-2037-49ea-bdd0-9aaa8b29a95f
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[22].m_ActionId
+      value: 5ed328f6-038e-4dd9-855c-79205865364a
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[1].m_ActionName
@@ -5700,39 +5752,63 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[8].m_ActionName
-      value: 'UI/Point[/Mouse/position,/Pen/position]'
+      value: 'Player/Swap[/Keyboard/q]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_ActionName
-      value: 'UI/Click[/Mouse/leftButton,/Pen/tip]'
+      value: 'UI/Point[/Mouse/position]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_ActionName
-      value: 'UI/RightClick[/Mouse/rightButton]'
+      value: 'UI/Click[/Mouse/leftButton]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[11].m_ActionName
-      value: 'UI/MiddleClick[/Mouse/middleButton]'
+      value: 'Keypad/Digit0[/Keyboard/n]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_ActionName
-      value: 'UI/ScrollWheel[/Mouse/scroll]'
+      value: 'Keypad/Digit1[/XInputControllerWindows/buttonWest]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[13].m_ActionName
-      value: UI/TrackedDevicePosition
+      value: 'Keypad/Digit2[/XInputControllerWindows/buttonNorth]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[14].m_ActionName
-      value: UI/TrackedDeviceOrientation
+      value: 'Keypad/Digit3[/XInputControllerWindows/dpad/down]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[15].m_ActionName
-      value: 'Player/Swap[/Keyboard/q]'
+      value: 'Keypad/Digit4[/XInputControllerWindows/dpad/left]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[16].m_ActionName
-      value: 'Player/Swap[/Keyboard/q]'
+      value: 'Keypad/Digit5[/XInputControllerWindows/dpad/up]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[17].m_ActionName
+      value: 'Keypad/Digit6[/XInputControllerWindows/dpad/right]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[18].m_ActionName
+      value: 'Keypad/Digit7[/XInputControllerWindows/leftShoulder]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[19].m_ActionName
+      value: 'Keypad/Digit8[/XInputControllerWindows/rightShoulder]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[20].m_ActionName
+      value: 'Keypad/Digit9[/XInputControllerWindows/rightTrigger]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[21].m_ActionName
+      value: 'Keypad/EnterKey[/XInputControllerWindows/buttonSouth]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ActionEvents.Array.data[22].m_ActionName
+      value: 'Keypad/ClearKey[/XInputControllerWindows/buttonEast]'
       objectReference: {fileID: 0}
     - target: {fileID: 4938671260901049171, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.size
@@ -5838,6 +5914,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6263971316926290532, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7361407025776571428, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
       propertyPath: m_Name
       value: Player1
@@ -5853,7 +5933,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7361407025776571428, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1903549726}
+    - targetCorrespondingSourceObject: {fileID: 7361407025776571428, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1903549725}
   m_SourcePrefab: {fileID: 100100000, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
 --- !u!4 &1043839481 stripped
 Transform:
@@ -9258,8 +9344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c993aac1361e24641b12b4d9de2407a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keypad: {fileID: 0}
-  clickKey: 330
 --- !u!1001 &1618787456
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10028,7 +10112,7 @@ MonoBehaviour:
   Mole4: {fileID: 264384172}
   Mole5: {fileID: 1245194987}
   Mole6: {fileID: 1669554295}
-  hammerRange: 1
+  hammerRange: 0.5
   wackAMole: {fileID: 2110235489}
 --- !u!50 &1820655598
 Rigidbody2D:
@@ -10444,6 +10528,41 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7361407025776571428, guid: 4aea46b7cfe45194fa39a246a0362f24, type: 3}
   m_PrefabInstance: {fileID: 1043839480}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1903549725
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903549719}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7403de063a91ffb4a8cd8e3dd0f80e48, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1903549726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903549719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ac63177ebdf564594bac01a4fbb591, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1903549725}
 --- !u!1 &1913090338
 GameObject:
   m_ObjectHideFlags: 0
@@ -11221,17 +11340,16 @@ MonoBehaviour:
   player: {fileID: 1903549719}
   player2: {fileID: 1566364812}
   keyboardStartGameKey: 32
-  ControllerStartGameKey: 330
+  ControllerStartGameKey: 333
   keyboardHammerKey: 323
   LeaveWackAMoleKey: 27
-  rangeToStartGame: 1.66
+  rangeToStartGame: 2
   moleVisibleDuration: 1.5
   gameDuration: 30
   hammerPrefab: {fileID: 1820655594}
   wackAMoleGame: {fileID: 2110235488}
   molePrefab: {fileID: 1264660260}
-  spawnPoints:
-  - {fileID: 859351279}
+  spawnPoints: []
   spawnInterval: 2
   score: 0
   gamePopUp: {fileID: 1068822533}
