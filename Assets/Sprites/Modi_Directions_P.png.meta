@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Modi_Directions_P_0: -3531117365889871413
+      Modi_Directions_P_1: 6753589542957307757
+      Modi_Directions_P_2: -4384434897133185726
+      Modi_Directions_P_3: -5864382673457312821
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

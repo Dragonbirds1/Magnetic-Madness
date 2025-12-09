@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Modi_WalkUp_N_0: -7571373295753496285
+      Modi_WalkUp_N_1: -3714205475244569556
+      Modi_WalkUp_N_2: -4455528397070881166
+      Modi_WalkUp_N_3: 6051909912560782055
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

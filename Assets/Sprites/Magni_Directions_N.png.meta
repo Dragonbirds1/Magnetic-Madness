@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Magni_Directions_N_0: -1123022325320092870
+      Magni_Directions_N_1: 887637424322422142
+      Magni_Directions_N_2: 124122482689957062
+      Magni_Directions_N_3: -463048005155168269
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

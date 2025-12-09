@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Modi_WalkLeft_P_0: -2292803086654070865
+      Modi_WalkLeft_P_1: 8963662852414527857
+      Modi_WalkLeft_P_2: 5877117713804064266
+      Modi_WalkLeft_P_3: -7127121043176841697
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

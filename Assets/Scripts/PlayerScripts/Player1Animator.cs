@@ -20,6 +20,7 @@ public class Player1Animator : MonoBehaviour
             animator.SetBool("IsForwardIdle", false);
             animator.SetBool("IsLeft1", false);
             animator.SetBool("IsUp1", false);
+            animator.SetBool("IsDown1", false);
         }
         else if (Input.GetKeyUp(KeyCode.D))
         {
@@ -29,6 +30,7 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", false);
                 animator.SetBool("IsRight1", false);
                 animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
             }
             else if (Input.GetKey(KeyCode.W))
             {
@@ -36,6 +38,15 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", false);
                 animator.SetBool("IsLeft1", false);
                 animator.SetBool("IsUp1", true);
+                animator.SetBool("IsDown1", false);
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                animator.SetBool("IsDown1", true);
+                animator.SetBool("IsForwardIdle", false);
+                animator.SetBool("IsLeft1", false);
+                animator.SetBool("IsUp1", false);
+                animator.SetBool("IsRight1", false);
             }
             else
             {
@@ -43,6 +54,7 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", true);
                 animator.SetBool("IsLeft1", false);
                 animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
             }
         }
         if (Input.GetKeyDown(KeyCode.A))
@@ -51,6 +63,7 @@ public class Player1Animator : MonoBehaviour
             animator.SetBool("IsForwardIdle", false);
             animator.SetBool("IsRight1", false);
             animator.SetBool("IsUp1", false);
+            animator.SetBool("IsDown1", false);
         }
         else if (Input.GetKeyUp(KeyCode.A))
         {
@@ -60,6 +73,7 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", false);
                 animator.SetBool("IsLeft1", false);
                 animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
             }
             else if (Input.GetKey(KeyCode.W))
             {
@@ -67,6 +81,15 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", false);
                 animator.SetBool("IsLeft1", false);
                 animator.SetBool("IsUp1", true);
+                animator.SetBool("IsDown1", false);
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                animator.SetBool("IsDown1", true);
+                animator.SetBool("IsForwardIdle", false);
+                animator.SetBool("IsLeft1", false);
+                animator.SetBool("IsUp1", false);
+                animator.SetBool("IsRight1", false);
             }
             else
             {
@@ -74,6 +97,7 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", true);
                 animator.SetBool("IsRight1", false);
                 animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
             }
         }
         if (Input.GetKeyDown(KeyCode.W))
@@ -82,6 +106,7 @@ public class Player1Animator : MonoBehaviour
             animator.SetBool("IsForwardIdle", false);
             animator.SetBool("IsRight1", false);
             animator.SetBool("IsLeft1", false);
+            animator.SetBool("IsDown1", false);
         }
         else if (Input.GetKeyUp(KeyCode.W))
         {
@@ -91,6 +116,7 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", false);
                 animator.SetBool("IsLeft1", false);
                 animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
             }
             else if (Input.GetKey(KeyCode.A))
             {
@@ -98,12 +124,65 @@ public class Player1Animator : MonoBehaviour
                 animator.SetBool("IsForwardIdle", false);
                 animator.SetBool("IsRight1", false);
                 animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                animator.SetBool("IsDown1", true);
+                animator.SetBool("IsForwardIdle", false);
+                animator.SetBool("IsLeft1", false);
+                animator.SetBool("IsUp1", false);
+                animator.SetBool("IsRight1", false);
             }
             else {
                 animator.SetBool("IsRight1", false);
                 animator.SetBool("IsForwardIdle", true);
                 animator.SetBool("IsLeft1", false);
                 animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            animator.SetBool("IsDown1", true);
+            animator.SetBool("IsForwardIdle", false);
+            animator.SetBool("IsLeft1", false);
+            animator.SetBool("IsUp1", false);
+            animator.SetBool("IsRight1", false);
+        }
+        else if (Input.GetKeyUp(KeyCode.S))
+        {
+            if (Input.GetKey(KeyCode.D))
+            {
+                animator.SetBool("IsRight1", true);
+                animator.SetBool("IsForwardIdle", false);
+                animator.SetBool("IsLeft1", false);
+                animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                animator.SetBool("IsLeft1", true);
+                animator.SetBool("IsForwardIdle", false);
+                animator.SetBool("IsRight1", false);
+                animator.SetBool("IsUp1", false);
+                animator.SetBool("IsDown1", false);
+            }
+            else if (Input.GetKey(KeyCode.W))
+            {
+                animator.SetBool("IsUp1", true);
+                animator.SetBool("IsForwardIdle", false);
+                animator.SetBool("IsRight1", false);
+                animator.SetBool("IsLeft1", false);
+                animator.SetBool("IsDown1", false);
+            }
+            else
+            {
+                animator.SetBool("IsDown1", false);
+                animator.SetBool("IsForwardIdle", true);
+                animator.SetBool("IsLeft1", false);
+                animator.SetBool("IsUp1", false);
+                animator.SetBool("IsRight1", false);
             }
         }
     }

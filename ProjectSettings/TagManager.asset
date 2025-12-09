@@ -32,7 +32,7 @@ TagManager:
   - IsEnemy
   - IsMole
   - IgnoreCamera
-  - 
+  - IsPlayer
   - 
   - 
   - 

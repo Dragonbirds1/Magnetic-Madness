@@ -5,8 +5,6 @@ public class PlayerAbility : MonoBehaviour
 {
     public static int playerCount;
 
-    public Color32 positiveColor = new Color32(255, 153, 0, 255);
-    public Color32 negativeColor = new Color32(0, 255, 255, 255);
     public float radius;
     public float currentForce;
     public LayerMask block, wall;
@@ -15,10 +13,23 @@ public class PlayerAbility : MonoBehaviour
     private float lastAbilityTime = -Mathf.Infinity;
     private SpriteRenderer sr;
     public WackAMole wackAMole;
+    public KeyCode PositiveKey, NegativeKey;
+    bool PositiveAbilityActive = false;
+    bool NegativeAbilityActive = false;
+    public Animator sparkAnimator;
+    public float sparkTime;
+    bool coolDownActive;
+    float coolDownTime;
+    bool abilityUsed = false;
+    public SpriteRenderer sparkSpriteRenderer;
+
 
     private void Awake()
     {
         playerCount++;
+
+        coolDownActive = false;
+
 
         if (playerCount == 1)
         {
@@ -35,13 +46,49 @@ public class PlayerAbility : MonoBehaviour
 
     private void Update()
     {
-        sr.color = currentForce > 0 ? positiveColor : negativeColor;
+        //if (abilityUsed)
+        //{
+        //    sparkTime += Time.deltaTime;
+        //    sparkAnimator.SetBool("IsOn", false);
+        //    coolDownTime += Time.deltaTime;
+        //    if (coolDownTime >= 0.267f)
+        //    {
+        //        sparkAnimator.SetBool("IsOn", true);
+        //        sparkTime = 0f;
+        //        coolDownTime = 0f;
+        //        abilityUsed = false;
+        //        coolDownActive = false;
+        //    }
+        //    
+        //}
+        if (PositiveAbilityActive)
+        {
+            sparkTime += Time.deltaTime;
+            sparkAnimator.SetTrigger("SPARKP");
+            if (sparkTime >= 0.267f)
+            {
+                sparkAnimator.ResetTrigger("SPARKP");
+                sparkTime = 0f;
+                PositiveAbilityActive = false;
+            }
+            
+        }
     }
 
     public void UseAbility(InputAction.CallbackContext ctx)
     {
         if (wackAMole.freezeGameplay == false)
         {
+            if (Input.GetKeyDown(PositiveKey))
+            {
+                    PositiveAbilityActive = true;
+                    NegativeAbilityActive = false;
+            }
+            if (Input.GetKeyDown(NegativeKey))
+            {
+                    NegativeAbilityActive = true;
+                    PositiveAbilityActive = false;
+            }
             if (ctx.canceled)
                 return;
 
@@ -54,6 +101,8 @@ public class PlayerAbility : MonoBehaviour
             RaycastHit2D enemyHit = Physics2D.CircleCast(transform.position, radius, Vector2.zero, 0f, block);
             if (enemyHit) // If something is hit within the radius
             {
+                
+                
                 RaycastHit2D wallHit = Physics2D.Linecast(transform.position, enemyHit.transform.position, wall);
 
                 // If there are no obstacles between the player and the hit object and it has a Rigidbody2D
@@ -63,6 +112,7 @@ public class PlayerAbility : MonoBehaviour
                     hitRigidbody.AddForce(direction * currentForce, ForceMode2D.Impulse);
                     Debug.Log("Pull ability used on " + enemyHit.collider.name);
                     lastAbilityTime = Time.time;
+                    
                 }
             }
             else
