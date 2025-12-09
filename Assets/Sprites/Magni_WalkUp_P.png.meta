@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Magni_WalkUp_P_0: -3169795075202105636
+      Magni_WalkUp_P_1: 3788807263175109706
+      Magni_WalkUp_P_2: -8682105000014306246
+      Magni_WalkUp_P_3: -7996941111316457269
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

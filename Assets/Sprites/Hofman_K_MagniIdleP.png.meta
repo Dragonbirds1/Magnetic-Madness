@@ -235,7 +235,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Hofman_K_MagniIdleP_0: 2867739826542017216
+      Hofman_K_MagniIdleP_1: 3553408907028611412
+      Hofman_K_MagniIdleP_2: 6080970076567971358
+      Hofman_K_MagniIdleP_3: 5838877247207078707
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
