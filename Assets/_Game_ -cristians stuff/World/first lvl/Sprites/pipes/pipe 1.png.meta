@@ -129,10 +129,10 @@ TextureImporter:
       name: pipe 1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 32
-        height: 32
+        x: 7
+        y: 1
+        width: 82
+        height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,55 +147,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: pipe 1_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 18d144dc7d8a32543997b6489520ea75
-      internalID: 382569556
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: pipe 1_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3dee3e098cddd2244af6cd1da4ac11ad
-      internalID: 138259233
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 60d0898b880457b4ebb2ea1c65fb9809
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -206,8 +162,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       pipe 1_0: 6514014220426281422
-      pipe 1_1: 382569556
-      pipe 1_2: 138259233
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
