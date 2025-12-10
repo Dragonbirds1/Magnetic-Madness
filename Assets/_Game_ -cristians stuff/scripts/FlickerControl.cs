@@ -20,7 +20,7 @@ public class FlickerControl : MonoBehaviour
     }
 
 
-
+    // you can change the time delay between the light turning off and on. line 28/31
     IEnumerator FlickeringLight()
     {
         isFlickering = true;
