@@ -17,11 +17,12 @@ public class PlayerAbility : MonoBehaviour
     bool PositiveAbilityActive = false;
     bool NegativeAbilityActive = false;
     public Animator sparkAnimator;
-    public float sparkTime;
+    public float sparkTime, sparkTime2;
     bool coolDownActive;
     float coolDownTime;
     bool abilityUsed = false;
     public SpriteRenderer sparkSpriteRenderer;
+    public Animator sparkNegativeAnimator;
 
 
     private void Awake()
@@ -46,21 +47,7 @@ public class PlayerAbility : MonoBehaviour
 
     private void Update()
     {
-        //if (abilityUsed)
-        //{
-        //    sparkTime += Time.deltaTime;
-        //    sparkAnimator.SetBool("IsOn", false);
-        //    coolDownTime += Time.deltaTime;
-        //    if (coolDownTime >= 0.267f)
-        //    {
-        //        sparkAnimator.SetBool("IsOn", true);
-        //        sparkTime = 0f;
-        //        coolDownTime = 0f;
-        //        abilityUsed = false;
-        //        coolDownActive = false;
-        //    }
-        //    
-        //}
+        
         if (PositiveAbilityActive)
         {
             sparkTime += Time.deltaTime;
@@ -73,6 +60,17 @@ public class PlayerAbility : MonoBehaviour
             }
             
         }
+        if (NegativeAbilityActive)
+        {
+            sparkTime2 += Time.deltaTime;
+            sparkNegativeAnimator.SetTrigger("SPARKN");
+            if (sparkTime2 >= 0.267f)
+            {
+                sparkNegativeAnimator.ResetTrigger("SPARKN");
+                sparkTime2 = 0f;
+                NegativeAbilityActive = false;
+            }
+        }
     }
 
     public void UseAbility(InputAction.CallbackContext ctx)
@@ -82,12 +80,10 @@ public class PlayerAbility : MonoBehaviour
             if (Input.GetKeyDown(PositiveKey))
             {
                     PositiveAbilityActive = true;
-                    NegativeAbilityActive = false;
             }
             if (Input.GetKeyDown(NegativeKey))
             {
-                    NegativeAbilityActive = true;
-                    PositiveAbilityActive = false;
+                    NegativeAbilityActive = false;
             }
             if (ctx.canceled)
                 return;
