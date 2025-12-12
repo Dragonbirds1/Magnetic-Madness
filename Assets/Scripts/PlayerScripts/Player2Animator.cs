@@ -8,7 +8,7 @@ public class Player2Animator : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Current State: " + animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"));
+        //Debug.Log("Current State: " + animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"));
 
         if (Gamepad.current == null)
             return;

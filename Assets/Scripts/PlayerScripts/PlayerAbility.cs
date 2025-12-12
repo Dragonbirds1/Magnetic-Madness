@@ -13,24 +13,10 @@ public class PlayerAbility : MonoBehaviour
     private float lastAbilityTime = -Mathf.Infinity;
     private SpriteRenderer sr;
     public WackAMole wackAMole;
-    public KeyCode PositiveKey, NegativeKey;
-    bool PositiveAbilityActive = false;
-    bool NegativeAbilityActive = false;
-    public Animator sparkAnimator;
-    public float sparkTime, sparkTime2;
-    bool coolDownActive;
-    float coolDownTime;
-    bool abilityUsed = false;
-    public SpriteRenderer sparkSpriteRenderer;
-    public Animator sparkNegativeAnimator;
-
 
     private void Awake()
     {
         playerCount++;
-
-        coolDownActive = false;
-
 
         if (playerCount == 1)
         {
@@ -48,43 +34,12 @@ public class PlayerAbility : MonoBehaviour
     private void Update()
     {
         
-        if (PositiveAbilityActive)
-        {
-            sparkTime += Time.deltaTime;
-            sparkAnimator.SetTrigger("SPARKP");
-            if (sparkTime >= 0.267f)
-            {
-                sparkAnimator.ResetTrigger("SPARKP");
-                sparkTime = 0f;
-                PositiveAbilityActive = false;
-            }
-            
-        }
-        if (NegativeAbilityActive)
-        {
-            sparkTime2 += Time.deltaTime;
-            sparkNegativeAnimator.SetTrigger("SPARKN");
-            if (sparkTime2 >= 0.267f)
-            {
-                sparkNegativeAnimator.ResetTrigger("SPARKN");
-                sparkTime2 = 0f;
-                NegativeAbilityActive = false;
-            }
-        }
     }
 
     public void UseAbility(InputAction.CallbackContext ctx)
     {
         if (wackAMole.freezeGameplay == false)
         {
-            if (Input.GetKeyDown(PositiveKey))
-            {
-                    PositiveAbilityActive = true;
-            }
-            if (Input.GetKeyDown(NegativeKey))
-            {
-                    NegativeAbilityActive = false;
-            }
             if (ctx.canceled)
                 return;
 

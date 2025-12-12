@@ -21,6 +21,8 @@ TagManager:
   - ButtonEnter
   - ButtonClear
   - enviorment
+  - ToggleMe
+  - ToggleMe2
   layers:
   - Default
   - TransparentFX
