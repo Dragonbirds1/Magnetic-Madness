@@ -6,10 +6,12 @@ public class BowlingBall : MonoBehaviour
     [Header("References")]
     public Rigidbody2D rb;
     public Transform arrow;
+    public GameObject player;
 
     [Header("Stats")]
     public float weight = 6f;
     public float hookStrength = 2f;
+    public float radToStart;
 
     [Header("Shot")]
     public float powerStep = 0.5f;
@@ -65,22 +67,33 @@ public class BowlingBall : MonoBehaviour
 
     void Update()
     {
-        if (!hasBeenThrown && togglePlayAction.WasPressedThisFrame())
+        float playerPos = Vector2.Distance(transform.position, player.transform.position);
+        if (playerPos <= radToStart)
         {
-            isActive = !isActive;
+            if (!hasBeenThrown && togglePlayAction.WasPressedThisFrame())
+            {
+                isActive = !isActive;
+                power = 0f;
+                arrow.gameObject.SetActive(false);
+            }
+
+            if (!isActive || hasBeenThrown) return;
+
+            HandleMovement();
+            HandleAim();
+            HandlePower();
+            UpdateArrow();
+
+            if (throwAction.WasPressedThisFrame())
+                Throw();
+        }
+        else if (playerPos > radToStart && isActive)
+        {
+            isActive = false;
             power = 0f;
             arrow.gameObject.SetActive(false);
+            return;
         }
-
-        if (!isActive || hasBeenThrown) return;
-
-        HandleMovement();
-        HandleAim();
-        HandlePower();
-        UpdateArrow();
-
-        if (throwAction.WasPressedThisFrame())
-            Throw();
     }
 
     void FixedUpdate()
@@ -168,4 +181,11 @@ public class BowlingBall : MonoBehaviour
         power = 0f;
         aimAngle = 90f;
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, radToStart);
+    }
 }
+
