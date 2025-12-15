@@ -12,6 +12,9 @@ public class Keypad : MonoBehaviour
     private string inputCode = "";
     private bool isUnlocked = false;
 
+    [Header("Game Objects")]
+    public GameObject doorObject;
+
     [Header("Sounds")]
     public AudioSource audioSource;
     public AudioClip keySound;
@@ -42,6 +45,8 @@ public class Keypad : MonoBehaviour
 
     void Start()
     {
+        doorObject.SetActive(true);
+
         // Combine all buttons into one array
         allButtons = new Button[digitButtons.Length + 2];
         digitButtons.CopyTo(allButtons, 0);
@@ -120,6 +125,7 @@ public class Keypad : MonoBehaviour
                 isUnlocked = true;
                 LockAllButtons();
                 startClear = true;
+                doorObject.SetActive(false);
             }
             else
             {

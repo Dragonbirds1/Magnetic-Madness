@@ -1,7 +1,14 @@
+using System;
 using UnityEngine;
+using TMPro;
+
 
 public class ToggleCutscene : MonoBehaviour
 {   
+    [Header("Enemy Scripts")]
+    [Tooltip("Reference to the HideAndSeekEnemy script")]
+    public HideAndSeekEnemy hideAndSeekEnemy;
+
     [Header("Cutscene")]
     [Tooltip("Animator controlling the cutscene")]
     public Animator cutsceneAnimator;
@@ -30,18 +37,59 @@ public class ToggleCutscene : MonoBehaviour
     [Tooltip("Object that triggers the second cutscene")]
     public GameObject toggleBlock2;
 
+    [Header("Timer Text")]
+    [Tooltip("UI Text element displaying the timer")]
+    public TMP_Text timerText;
+    
+    [Header("Countdown Time")]
+    [Tooltip("Time for countdown before enemy activation")]
+    public float countdownTime = 120f;
+    private float initialCountdownTime;
+
+    [Header("Time Display GameObject")]
+    [Tooltip("GameObject that holds the time display UI")]
+    public GameObject timeDisplayGameObject;
+
+    string currentTimeText;
     bool cutscene1TimeActive = false;
     bool cutscene2TimeActive = false;
+    bool startCountdown = false;
+    bool sendOutTheBeast = false;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         cutsceneCam.SetActive(false);
+        timeDisplayGameObject.SetActive(false);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (startCountdown)
+        {
+            initialCountdownTime = Mathf.Max(0, countdownTime);
+            countdownTime -= Time.deltaTime;
+            timeDisplayGameObject.SetActive(true);
+            int minutes = Mathf.FloorToInt(countdownTime / 60);
+            int seconds = Mathf.FloorToInt(countdownTime % 60);
+            currentTimeText = ("Time Left: " + string.Format("{0:00}:{1:00}", minutes, seconds));
+            timerText.text = currentTimeText;
+            if (countdownTime <= 0)
+            {
+                countdownTime = 0;
+                timeDisplayGameObject.SetActive(false);
+                startCountdown = false;
+                sendOutTheBeast = true;
+            }
+        }
+        if (sendOutTheBeast)
+        {
+            hideAndSeekEnemy.isMoving = true;
+            sendOutTheBeast = false;
+        }
         if (cutscene1TimeActive)
         {
             cutscene1Time += Time.deltaTime;
@@ -57,13 +105,14 @@ public class ToggleCutscene : MonoBehaviour
         if (cutscene2TimeActive)
         {
             cutscene2Time += Time.deltaTime;
-            if (cutscene2Time >= 33.333f)
+            if (cutscene2Time >= 38.750f)
             {
                 cutsceneCam.SetActive(false);
                 player1Cam.SetActive(true);
                 player2Cam.SetActive(true);
                 cutscene2Time = 0f;
                 cutscene2TimeActive = false;
+                startCountdown = true;
             }
         }
     }

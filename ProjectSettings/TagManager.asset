@@ -23,6 +23,9 @@ TagManager:
   - enviorment
   - ToggleMe
   - ToggleMe2
+  - Ball
+  - BowlingBall
+  - Pin
   layers:
   - Default
   - TransparentFX
