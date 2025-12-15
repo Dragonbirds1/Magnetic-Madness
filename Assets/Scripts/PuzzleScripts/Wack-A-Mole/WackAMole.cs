@@ -48,6 +48,7 @@ public class WackAMole: MonoBehaviour
     public GameObject Boarder;
     bool canToggleGame = true;
     public bool freezeGameplay = false;
+    public Animator buttonAnim1, buttonAnim2, buttonAnim3, buttonAnim4, buttonAnim5, buttonAnim6;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -65,12 +66,6 @@ public class WackAMole: MonoBehaviour
         startHole4Timer = false;
         startHole5Timer = false;
         startHole6Timer = false;
-        currentMoleInHole1.SetActive(false);
-        currentMoleInHole2.SetActive(false);
-        currentMoleInHole3.SetActive(false);
-        currentMoleInHole4.SetActive(false);
-        currentMoleInHole5.SetActive(false);
-        currentMoleInHole6.SetActive(false);
         triggerValue = Gamepad.current.rightTrigger.ReadValue();
         gamePopUp.SetActive(false);
     }
@@ -100,6 +95,12 @@ public class WackAMole: MonoBehaviour
                 hammerPrefab.SetActive(false);
                 Boarder.SetActive(true);
                 letsGoBack = false;
+                buttonAnim1.SetBool("IsFlash", false);
+                buttonAnim2.SetBool("IsFlash", false);
+                buttonAnim3.SetBool("IsFlash", false);
+                buttonAnim4.SetBool("IsFlash", false);
+                buttonAnim5.SetBool("IsFlash", false);
+                buttonAnim6.SetBool("IsFlash", false);
             }
         }
 
@@ -182,7 +183,7 @@ public class WackAMole: MonoBehaviour
             Hole1Timer += Time.deltaTime;
             if (Hole1Timer >= 3.0f)
             {
-                currentMoleInHole1.SetActive(false);
+                buttonAnim1.SetBool("IsFlash", false);
                 isMoleHole1Occupied = false;
                 startHole1Timer = false;
                 Hole1Timer = 0.0f;
@@ -194,7 +195,7 @@ public class WackAMole: MonoBehaviour
             Hole2Timer += Time.deltaTime;
             if (Hole2Timer >= 3.0f)
             {
-                currentMoleInHole2.SetActive(false);
+                buttonAnim2.SetBool("IsFlash", false);
                 isMoleHole2Occupied = false;
                 startHole2Timer = false;
                 Hole2Timer = 0.0f;
@@ -206,7 +207,7 @@ public class WackAMole: MonoBehaviour
             Hole3Timer += Time.deltaTime;
             if (Hole3Timer >= 3.0f)
             {
-                currentMoleInHole3.SetActive(false);
+                buttonAnim3.SetBool("IsFlash", false);
                 isMoleHole3Occupied = false;
                 startHole3Timer = false;
                 Hole3Timer = 0.0f;
@@ -218,7 +219,7 @@ public class WackAMole: MonoBehaviour
             Hole4Timer += Time.deltaTime;
             if (Hole4Timer >= 3.0f)
             {
-                currentMoleInHole4.SetActive(false);
+                buttonAnim4.SetBool("IsFlash", false);
                 isMoleHole4Occupied = false;
                 startHole4Timer = false;
                 Hole4Timer = 0.0f;
@@ -230,7 +231,7 @@ public class WackAMole: MonoBehaviour
             Hole5Timer += Time.deltaTime;
             if (Hole5Timer >= 3.0f)
             {
-                currentMoleInHole5.SetActive(false);
+                buttonAnim5.SetBool("IsFlash", false);
                 isMoleHole5Occupied = false;
                 startHole5Timer = false;
                 Hole5Timer = 0.0f;
@@ -242,7 +243,7 @@ public class WackAMole: MonoBehaviour
             Hole6Timer += Time.deltaTime;
             if (Hole6Timer >= 3.0f)
             {
-                currentMoleInHole6.SetActive(false);
+                buttonAnim6.SetBool("IsFlash", false);
                 isMoleHole6Occupied = false;
                 startHole6Timer = false;
                 Hole6Timer = 0.0f;
@@ -287,12 +288,7 @@ public class WackAMole: MonoBehaviour
     public void EndGame()
     {
         waitTimeBetweenMoles = 0.0f;
-        currentMoleInHole1.SetActive(false);
-        currentMoleInHole2.SetActive(false);
-        currentMoleInHole3.SetActive(false);
-        currentMoleInHole4.SetActive(false);
-        currentMoleInHole5.SetActive(false);
-        currentMoleInHole6.SetActive(false);
+        
         Playing = false;
         Music.SetActive(false);
         Drumroll.SetActive(true);
@@ -307,15 +303,22 @@ public class WackAMole: MonoBehaviour
 
         YourScore2.text = score.ToString();
 
-        
+        buttonAnim1.SetBool("IsFlash", false);
+        buttonAnim2.SetBool("IsFlash", false);
+        buttonAnim3.SetBool("IsFlash", false);
+        buttonAnim4.SetBool("IsFlash", false);
+        buttonAnim5.SetBool("IsFlash", false);
+        buttonAnim6.SetBool("IsFlash", false);
+
+
         //if (score >= 10)
         //{
-           // Debug.Log("Wack A Mole Completed!");
-            //Trigger puzzle completion logic here
+        // Debug.Log("Wack A Mole Completed!");
+        //Trigger puzzle completion logic here
         //}
-       //else
-       //{
-            //Debug.Log("Wack A Mole Failed. Score: " + score);
+        //else
+        //{
+        //Debug.Log("Wack A Mole Failed. Score: " + score);
         //}
     }
 
@@ -329,42 +332,42 @@ public class WackAMole: MonoBehaviour
 
         if (randomMole == 1)
         {
-            currentMoleInHole1.SetActive(true);
+            buttonAnim1.SetBool("IsFlash", true);
             isMoleHole1Occupied = true;
             startHole1Timer = true;
         }
 
         if (randomMole == 2)
         {
-            currentMoleInHole2.SetActive(true);
+            buttonAnim2.SetBool("IsFlash", true);
             isMoleHole2Occupied = true;
             startHole2Timer = true;
         }
 
         if (randomMole == 3)
         {
-            currentMoleInHole3.SetActive(true);
+            buttonAnim3.SetBool("IsFlash", true);
             isMoleHole3Occupied = true;
             startHole3Timer = true;
         }
 
         if (randomMole == 4)
         {
-            currentMoleInHole4.SetActive(true);
+            buttonAnim4.SetBool("IsFlash", true);
             isMoleHole4Occupied = true;
             startHole4Timer = true;
         }
 
         if (randomMole == 5)
         {
-            currentMoleInHole5.SetActive(true);
+            buttonAnim5.SetBool("IsFlash", true);
             isMoleHole5Occupied = true;
             startHole5Timer = true;
         }
 
         if (randomMole == 6)
         {
-            currentMoleInHole6.SetActive(true);
+            buttonAnim6.SetBool("IsFlash", true);
             isMoleHole6Occupied = true;
             startHole6Timer = true;
         }

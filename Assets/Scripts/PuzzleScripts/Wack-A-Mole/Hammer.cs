@@ -13,9 +13,11 @@ public class Hammer : MonoBehaviour
     RaycastHit2D hit;
     MoleHit moleHit;
     public bool hasHit = false;
+    public Animator button1, button2, button3, button4, button5, button6;
     public GameObject Mole1, Mole2, Mole3, Mole4, Mole5, Mole6;
     public float hammerRange = 0.5f;
     public WackAMole wackAMole;
+    bool button1Flash, button2Flash, button3Flash, button4Flash, button5Flash, button6Flash;
 
     void Start()
     {
@@ -26,49 +28,55 @@ public class Hammer : MonoBehaviour
 
     public void Update()
     {
-        
+        button1Flash = button1.GetBool("IsFlash");
+        button2Flash = button2.GetBool("IsFlash");
+        button3Flash = button3.GetBool("IsFlash");
+        button4Flash = button4.GetBool("IsFlash");
+        button5Flash = button5.GetBool("IsFlash");
+        button6Flash = button6.GetBool("IsFlash");
+
         MousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         rb.linearVelocity = new Vector2((MousePos.x - transform.position.x) * hammerSpeed, (MousePos.y - transform.position.y) * hammerSpeed);
 
         if (Input.GetKeyDown(hitKey))
         {
-            if (Vector2.Distance(transform.position, Mole1.transform.position) <= hammerRange && Mole1.activeSelf)
+            if (Vector2.Distance(transform.position, Mole1.transform.position) <= hammerRange && button1Flash == true)
             {
-                Mole1.SetActive(false);
+                button1.SetBool("IsFlash", false);
                 wackAMole.addScore();
             }
 
-            if (Vector2.Distance(transform.position, Mole2.transform.position) <= hammerRange && Mole2.activeSelf)
+            if (Vector2.Distance(transform.position, Mole2.transform.position) <= hammerRange && button2Flash == true)
             {
-                Mole2.SetActive(false);
+                button2.SetBool("IsFlash", false);
                 wackAMole.addScore();
                 //wackAMole.Hole2Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole3.transform.position) <= hammerRange && Mole3.activeSelf)
+            if (Vector2.Distance(transform.position, Mole3.transform.position) <= hammerRange && button3Flash == true)
             {
-                Mole3.SetActive(false);
+                button3.SetBool("IsFlash", false);
                 wackAMole.addScore();
                 //wackAMole.Hole3Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole4.transform.position) <= hammerRange && Mole4.activeSelf)
+            if (Vector2.Distance(transform.position, Mole4.transform.position) <= hammerRange && button4Flash == true)
             {
-                Mole4.SetActive(false);
+                button4.SetBool("IsFlash", false);
                 wackAMole.addScore();
                 //wackAMole.Hole4Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole5.transform.position) <= hammerRange && Mole5.activeSelf)
+            if (Vector2.Distance(transform.position, Mole5.transform.position) <= hammerRange && button5Flash == true)
             {
-                Mole5.SetActive(false);
+                button5.SetBool("IsFlash", false);
                 wackAMole.addScore();
                 //wackAMole.Hole5Timer = 0.0f;
             }
 
-            if (Vector2.Distance(transform.position, Mole6.transform.position) <= hammerRange && Mole6.activeSelf)
+            if (Vector2.Distance(transform.position, Mole6.transform.position) <= hammerRange && button6Flash == true)
             {
-                Mole6.SetActive(false);
+                button6.SetBool("IsFlash", false);
                 wackAMole.addScore();
                 //wackAMole.Hole6Timer = 0.0f;
             }
