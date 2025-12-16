@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      bowling lane_0: -2151864500678622293
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
