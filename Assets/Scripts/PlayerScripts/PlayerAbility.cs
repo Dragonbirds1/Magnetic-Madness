@@ -13,6 +13,9 @@ public class PlayerAbility : MonoBehaviour
     private float lastAbilityTime = -Mathf.Infinity;
     private SpriteRenderer sr;
     public WackAMole wackAMole;
+    public Player1Death player1Death;
+    public Player2Death player2Death;
+    public bool dead = false;
 
     private void Awake()
     {
@@ -38,7 +41,7 @@ public class PlayerAbility : MonoBehaviour
 
     public void UseAbility(InputAction.CallbackContext ctx)
     {
-        if (wackAMole.freezeGameplay == false)
+        if (wackAMole.freezeGameplay == false || dead == false)
         {
             if (ctx.canceled)
                 return;
@@ -71,7 +74,7 @@ public class PlayerAbility : MonoBehaviour
                 Debug.Log("No valid target in range for pull ability.");
             }
         }
-        else if (wackAMole.freezeGameplay == true)
+        else if (wackAMole.freezeGameplay == true || dead == true)
         {
             return;
         }

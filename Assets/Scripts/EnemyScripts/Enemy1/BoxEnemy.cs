@@ -19,13 +19,13 @@ public class BoxEnemy : MonoBehaviour
     private Vector3 currentRotationDirection;
     private Vector3 currentVelocityDirection;
     private bool playerFound = false, player2Found = false;
-    private bool isChasing = false;
+    public bool isChasing = false;
     public GameObject player, player2;
     public float chaseSpeed = 5.0f;
     public float detectionRange = 5.0f;
-    bool patrol = true;
-    bool patrol2 = true;
-    bool patrol3 = true;
+    public bool patrol = true;
+    public bool patrol2 = true;
+    public bool patrol3 = true;
     public float randomAction;
     public float sleepTime = 3.0f;
     bool sleepTimeChange = false;
@@ -33,6 +33,10 @@ public class BoxEnemy : MonoBehaviour
     //public float timeTillDash = 2.0f;
     //public float dashTime = 1.0f;
     public WackAMole wackAMole;
+    public Player1Death player1Death;
+    public Player2Death player2Death;
+    public bool player1IsDead;
+    public bool player2IsDead;
 
 
 
@@ -118,59 +122,59 @@ public class BoxEnemy : MonoBehaviour
     }
     void Search() // Search for player within detection range
     {
-        Debug.Log("Searching for player");
-        if (Vector3.Distance(transform.position, player.transform.position) <= detectionRange)
-        {
-            playerFound = true;
-        }
-        else
-        {
-            playerFound = false;
-        }
-        if (Vector3.Distance(transform.position, player2.transform.position) <= detectionRange)
-        {
-            player2Found = true;
-        }
-        else
-        {
-            player2Found = false;
-        }
-        if (!playerFound)
-        {
-            Debug.Log("Player not found, continuing patrol");
-            patrol = true;
-
-        }
-        else if (playerFound)
-        {
-            Debug.Log("Player found, engaging");
-            isChasing = true;
-            if (isChasing)
+            Debug.Log("Searching for player");
+            if (Vector3.Distance(transform.position, player.transform.position) <= detectionRange && player1IsDead == false)
             {
-                patrol = false;
-                patrol2 = false;
-                patrol3 = true;
+                playerFound = true;
             }
-
-        }
-        if (!player2Found)
+            else if (Vector3.Distance(transform.position, player.transform.position) > detectionRange || player1IsDead == true)
         {
-            Debug.Log("Player2 not found, continuing patrol");
-            patrol = true;
-        }
-        else if (player2Found)
-        {
-            Debug.Log("Player2 found, engaging");
-            isChasing = true;
-            if (isChasing)
+                playerFound = false;
+            }
+            if (Vector3.Distance(transform.position, player2.transform.position) <= detectionRange && player2IsDead == false)
             {
-                patrol = false;
-                patrol2 = true;
-                patrol3 = false;
+                player2Found = true;
             }
-        
+            else if (Vector3.Distance(transform.position, player2.transform.position) > detectionRange || player2IsDead == true)
+        {
+                player2Found = false;
+            }
+            if (!playerFound)// || player1Death.isDead == true)
+            {
+                Debug.Log("Player not found, continuing patrol");
+                patrol = true;
+
+            }
+            else if (playerFound)// && player1Death.isDead == false)
+            {
+                Debug.Log("Player found, engaging");
+                isChasing = true;
+                if (isChasing)
+                {
+                    patrol = false;
+                    patrol2 = false;
+                    patrol3 = true;
+                }
+
+            }
+            if (!player2Found)// || player2Death.isDead == true)
+            {
+                Debug.Log("Player2 not found, continuing patrol");
+                patrol = true;
+            }
+            else if (player2Found)// && player2Death.isDead == false)
+            {
+                Debug.Log("Player2 found, engaging");
+                isChasing = true;
+                if (isChasing)
+                {
+                    patrol = false;
+                    patrol2 = true;
+                    patrol3 = false;
+                }
+
+            }
         }
-    }
 
     void Change() // Change random action after each waypoint
     {

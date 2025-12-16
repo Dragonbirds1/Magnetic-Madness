@@ -26,6 +26,7 @@ TagManager:
   - Ball
   - BowlingBall
   - Pin
+  - Enemy
   layers:
   - Default
   - TransparentFX
