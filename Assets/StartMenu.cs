@@ -13,4 +13,9 @@ public class StartMenu : MonoBehaviour
         Application.Quit();
         Debug.Log("Henry. I have to quit. Haha.");
     }
+
+    public void OnCreditsButtonPressed()
+    {
+        SceneManager.LoadScene("Credits");
+    }
 }
