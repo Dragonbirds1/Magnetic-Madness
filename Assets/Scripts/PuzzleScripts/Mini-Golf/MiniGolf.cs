@@ -7,6 +7,7 @@ public class MiniGolf : MonoBehaviour
     public Rigidbody2D rb;
     public Transform arrow;
     public GameObject player;
+    public GameObject golfCam1;
 
     [Header("Power Settings")]
     public float powerMultiplier = 5f;
@@ -18,9 +19,18 @@ public class MiniGolf : MonoBehaviour
 
     private Vector2 dragStart;
     private bool isAiming;
+    bool camMove = false;
 
     void Update()
     {
+        if (camMove)
+        {
+            golfCam1.SetActive(true);
+        }
+        else if (!camMove)
+        {
+            golfCam1.SetActive(false);
+        }
         float playerPos = Vector2.Distance(transform.position, player.transform.position);
         if (playerPos <= radToHit)
         {
@@ -45,10 +55,12 @@ public class MiniGolf : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0) && isAiming)
             {
+                camMove = true;
                 ShootBall();
                 isAiming = false;
                 arrow.gameObject.SetActive(false);
             }
+
         }
         else if (playerPos > radToHit)
         {

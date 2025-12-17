@@ -27,6 +27,8 @@ TagManager:
   - BowlingBall
   - Pin
   - Enemy
+  - Spot
+  - ToggleMe3
   layers:
   - Default
   - TransparentFX

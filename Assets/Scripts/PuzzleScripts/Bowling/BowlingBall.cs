@@ -7,6 +7,8 @@ public class BowlingBall : MonoBehaviour
     public Rigidbody2D rb;
     public Transform arrow;
     public GameObject player;
+    public GameObject camBowl;
+    public GameObject camFollow;
 
     [Header("Stats")]
     public float weight = 6f;
@@ -63,6 +65,8 @@ public class BowlingBall : MonoBehaviour
     {
         rb.mass = weight;
         arrow.gameObject.SetActive(false);
+        camBowl.SetActive(false);
+        camFollow.SetActive(false);
     }
 
     void Update()
@@ -156,6 +160,7 @@ public class BowlingBall : MonoBehaviour
     {
         if (power <= 0f) return;
 
+        camBowl.SetActive(true);
         Vector2 dir = AngleToVector(aimAngle);
         rb.AddForce(dir * power, ForceMode2D.Impulse);
 
@@ -172,6 +177,8 @@ public class BowlingBall : MonoBehaviour
 
     public void ResetBall(Vector3 startPos)
     {
+        camFollow.SetActive(false);
+        camBowl.SetActive(false);
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0;
         transform.position = startPos;

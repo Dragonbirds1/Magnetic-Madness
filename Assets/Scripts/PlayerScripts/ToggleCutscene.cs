@@ -50,6 +50,12 @@ public class ToggleCutscene : MonoBehaviour
     [Tooltip("GameObject that holds the time display UI")]
     public GameObject timeDisplayGameObject;
 
+    [Header("UI Crap")]
+    [Tooltip("The seperator for both cameras/Boarder")]
+    public GameObject boarder;
+    [Tooltip("The mouse UI for player two")]
+    public GameObject mouseUI;
+
     string currentTimeText;
     bool cutscene1TimeActive = false;
     bool cutscene2TimeActive = false;
@@ -95,6 +101,9 @@ public class ToggleCutscene : MonoBehaviour
             cutscene1Time += Time.deltaTime;
             if (cutscene1Time >= 18.333f)
             {
+                boarder.SetActive(true);
+                mouseUI.SetActive(true);
+                Cursor.visible = true;
                 cutsceneCam.SetActive(false);
                 player1Cam.SetActive(true);
                 player2Cam.SetActive(true);
@@ -107,6 +116,9 @@ public class ToggleCutscene : MonoBehaviour
             cutscene2Time += Time.deltaTime;
             if (cutscene2Time >= 38.750f)
             {
+                boarder.SetActive(true);
+                mouseUI.SetActive(true);
+                Cursor.visible = true;
                 cutsceneCam.SetActive(false);
                 player1Cam.SetActive(true);
                 player2Cam.SetActive(true);
@@ -121,6 +133,9 @@ public class ToggleCutscene : MonoBehaviour
     {
         if (collision.CompareTag("ToggleMe"))
         {
+            boarder.SetActive(false);
+            mouseUI.SetActive(false);
+            Cursor.visible = false;
             cutsceneCam.SetActive(true);
             player1Cam.SetActive(false);
             player2Cam.SetActive(false);
@@ -131,12 +146,20 @@ public class ToggleCutscene : MonoBehaviour
 
         if (collision.CompareTag("ToggleMe2"))
         {
+            boarder.SetActive(false);
+            mouseUI.SetActive(false);
+            Cursor.visible = false;
             cutsceneCam.SetActive(true);
             player1Cam.SetActive(false);
             player2Cam.SetActive(false);
             cutsceneAnimator.SetBool("MoveOn", true);
             cutscene2TimeActive = true;
             toggleBlock2.SetActive(false);
+        }
+
+        if (collision.CompareTag("ToggleMe3"))
+        {
+            countdownTime = 0f;
         }
     }
 }
