@@ -29,15 +29,16 @@ public class BoxEnemy : MonoBehaviour
     public float randomAction;
     public float sleepTime = 3.0f;
     bool sleepTimeChange = false;
-    public GameObject sleepEye, sleepEye2;
-    //public float timeTillDash = 2.0f;
-    //public float dashTime = 1.0f;
+    public float timeTillDash = 2.0f;
+    public float dashTime = 1.0f;
     public WackAMole wackAMole;
     public Player1Death player1Death;
     public Player2Death player2Death;
     public bool player1IsDead;
     public bool player2IsDead;
-
+    public Animator enemyAnim;
+    public float wakeTime = 0.0f;
+    bool hasWoken = false;
 
 
 
@@ -55,36 +56,55 @@ public class BoxEnemy : MonoBehaviour
     {
         if (wackAMole.freezeGameplay == false)
         {
+            if (hasWoken)
+            {
+                wakeTime += Time.deltaTime;
+                if (wakeTime >= 0.517f)
+                {
+                    hasWoken = false;
+                    wakeTime = 0.0f;
+                    enemyAnim.SetBool("isWake", false);
+                    enemyAnim.SetBool("isIdle", true);
+                }
+            }
             if (sleepTimeChange)
             {
                 sleepTime -= Time.deltaTime;
+                enemyAnim.SetBool("isSleep", true);
+                enemyAnim.SetBool("isWalk", false);
             }
             else if (!sleepTimeChange)
             {
+                enemyAnim.SetBool("isSleep", false);
+                enemyAnim.SetBool("isWalk", true);
+                enemyAnim.SetBool("isIdle", false);
                 patrol = true;
             }
             if (sleepTime <= 0)
             {
+                hasWoken = true;
+                enemyAnim.SetBool("isWake", true);
+                enemyAnim.SetBool("isSleep", false);
                 sleepTimeChange = false;
-                sleepEye.SetActive(false);
-                sleepEye2.SetActive(false);
                 randomAction = Random.Range(0f, 10f);
                 sleepTime = 3.0f;
             }
             if (patrol2 == false)
             {
                 transform.position = Vector3.MoveTowards(transform.position, player.transform.position, chaseSpeed * Time.deltaTime);
-                //dash();
+                dash();
                 chaseTime -= Time.deltaTime;
             }
             if (patrol3 == false)
             {
                 transform.position = Vector3.MoveTowards(transform.position, player2.transform.position, chaseSpeed * Time.deltaTime);
-                //dash();
+                dash();
                 chaseTime -= Time.deltaTime;
             }
             if (chaseTime <= 0)
             {
+                enemyAnim.SetBool("isWalk", true);
+                enemyAnim.SetBool("isIdle", false);
                 isChasing = false;
                 patrol = true;
                 patrol2 = true;
@@ -96,16 +116,24 @@ public class BoxEnemy : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, speed * Time.deltaTime);
                 if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.1f)
                 {
+                    enemyAnim.SetBool("isWalk", true);
+                    enemyAnim.SetBool("isIdle", false);
                     if (randomAction <= 5f)
                     {
+                        enemyAnim.SetBool("isSleep", true);
+                        enemyAnim.SetBool("isWalk", false);
                         sleeping();
 
                     }
                     else if (randomAction > 5f && randomAction <= 10f)
                     {
+                        enemyAnim.SetBool("isIdle", true);
+                        enemyAnim.SetBool("isWalk", false);
                         waitTime -= Time.deltaTime;
                         if (waitTime <= 0)
                         {
+                            enemyAnim.SetBool("isIdle", false);
+                            enemyAnim.SetBool("isWalk", true);
                             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count;
                             Search();
                             Change();
@@ -151,6 +179,7 @@ public class BoxEnemy : MonoBehaviour
                 isChasing = true;
                 if (isChasing)
                 {
+                    enemyAnim.SetBool("isWalk", true);
                     patrol = false;
                     patrol2 = false;
                     patrol3 = true;
@@ -161,9 +190,12 @@ public class BoxEnemy : MonoBehaviour
             {
                 Debug.Log("Player2 not found, continuing patrol");
                 patrol = true;
-            }
+                enemyAnim.SetBool("isWalk", true);
+                enemyAnim.SetBool("isIdle", false);
+        }
             else if (player2Found)// && player2Death.isDead == false)
             {
+                enemyAnim.SetBool("isWalk", true);
                 Debug.Log("Player2 found, engaging");
                 isChasing = true;
                 if (isChasing)
@@ -184,8 +216,6 @@ public class BoxEnemy : MonoBehaviour
 
     void sleeping() // Enemy sleep mechanic
     {
-        sleepEye.SetActive(true);
-        sleepEye2.SetActive(true);
         Debug.Log("Enemy is sleeping");
         patrol = false;
         sleepTimeChange = true;
@@ -196,21 +226,21 @@ public class BoxEnemy : MonoBehaviour
         }
     }
 
-    //void dash() // Dash mechanic for enemy when chasing player
-    //{
-    //    timeTillDash -= Time.deltaTime;
-    //    if (timeTillDash <= 0)
-    //    {
-    //        chaseSpeed = 8.0f;
-    //        dashTime -= Time.deltaTime;
-    //        if (dashTime <= 0)
-    //        {
-    //            chaseSpeed = 5.0f;
-    //            timeTillDash = 2.0f;
-    //            dashTime = 1.0f;
-    //        }
-    //    }
-    //}
+    void dash() // Dash mechanic for enemy when chasing player
+    {
+        timeTillDash -= Time.deltaTime;
+        if (timeTillDash <= 0)
+        {
+            chaseSpeed = 8.0f;
+            dashTime -= Time.deltaTime;
+            if (dashTime <= 0)
+            {
+                chaseSpeed = 5.0f;
+                timeTillDash = 2.0f;
+                dashTime = 1.0f;
+            }
+        }
+    }
 
     private void OnDrawGizmosSelected() // Visualize detection range in editor
     {
