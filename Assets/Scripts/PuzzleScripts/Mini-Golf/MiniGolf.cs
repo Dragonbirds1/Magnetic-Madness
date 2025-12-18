@@ -17,12 +17,27 @@ public class MiniGolf : MonoBehaviour
     public float stopThreshold = 0.05f;
     public float radToHit;
 
+    [Header("Camera Settings")]
+    public float camTime;
+
     private Vector2 dragStart;
     private bool isAiming;
     bool camMove = false;
+    bool startCamTime = false;
 
     void Update()
     {
+        if (startCamTime)
+        {
+            camTime += Time.deltaTime;
+            if (camTime >= 2.0f)
+            {
+                camMove = false;
+                golfCam1.SetActive(false);
+                startCamTime = false;
+                camTime = 0.0f;
+            }
+        }
         if (camMove)
         {
             golfCam1.SetActive(true);
@@ -55,6 +70,7 @@ public class MiniGolf : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0) && isAiming)
             {
+                startCamTime = true;
                 camMove = true;
                 ShootBall();
                 isAiming = false;

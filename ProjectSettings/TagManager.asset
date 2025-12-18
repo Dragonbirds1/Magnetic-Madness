@@ -29,6 +29,17 @@ TagManager:
   - Enemy
   - Spot
   - ToggleMe3
+  - BowlingTriggerBox
+  - MiniGolfTriggerBox
+  - WackAMoleTriggerBox
+  - Keycard
+  - CardReader
+  - Keycard2
+  - Keycard3
+  - Lever
+  - ToggleMe4
+  - SafeHideToggleBlock
+  - HidingSpotTriggerBox
   layers:
   - Default
   - TransparentFX
@@ -41,7 +52,7 @@ TagManager:
   - IsMole
   - IgnoreCamera
   - IsPlayer
-  - 
+  - IsLever
   - 
   - 
   - 

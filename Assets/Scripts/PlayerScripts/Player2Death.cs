@@ -25,13 +25,18 @@ public class Player2Death : MonoBehaviour
     [Header("Death State")]
     [Tooltip("Indicates whether the player is dead")]
     public bool canMove = true;
-
     public bool isDead = false;
+
+    [Header("Button GameObjects")]
+    [Tooltip("Reference to the button GameObject")]
+    public GameObject button1;
+    public GameObject button2;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        button1.SetActive(false);
+        button2.SetActive(false);
     }
 
     // Update is called once per frame
@@ -48,6 +53,8 @@ public class Player2Death : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy") && !isDead)
         {
+            button1.SetActive(true);
+            button2.SetActive(true);
             sparkAnimator.enabled = false;
             playerAbility.enabled = false;
             abilitySwap.enabled = false;

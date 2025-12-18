@@ -8,6 +8,7 @@ public class AbilitySwap : MonoBehaviour
     public Player1Death player1Death;
     public Player2Death player2Death;
     public bool death = false;
+    public bool isPull = true;
 
     void Update()
     {
@@ -21,6 +22,14 @@ public class AbilitySwap : MonoBehaviour
         else if (wackAMole.freezeGameplay == true || death == true)
         {
             return;
+        }
+        if (Player1Object.currentForce > 0)
+        {
+            isPull = true;
+        }
+        else if (Player1Object.currentForce < 0)
+        {
+            isPull = false;
         }
     }
 

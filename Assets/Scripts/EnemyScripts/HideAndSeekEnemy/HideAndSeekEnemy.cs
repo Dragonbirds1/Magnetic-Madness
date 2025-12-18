@@ -6,6 +6,22 @@ public class HideAndSeekEnemy : MonoBehaviour
     [Tooltip("The Hide and Seek Enemy GameObject")]
     public GameObject hideAndSeekEnemy;
 
+    [Header("Player1Death Script")]
+    [Tooltip("Reference to the Player1Death script")]
+    public Player1Death player1Death;
+
+    [Header("Player2Death Script")]
+    [Tooltip("Reference to the Player2Death script")]
+    public Player2Death player2Death;
+
+    [Header("TriggerStuff Script")]
+    [Tooltip("Reference to the TriggerStuff script")]
+    public TriggerStuff triggerStuff;
+
+    [Header("Enemy Animator")]
+    [Tooltip("Animator component for the Hide and Seek Enemy")]
+    public Animator enemyAnimator;
+
     [Header("Player GameObject")]
     [Tooltip("The Player GameObject")]
     public GameObject player;
@@ -39,10 +55,11 @@ public class HideAndSeekEnemy : MonoBehaviour
     private int currentWaypointIndex = 0;
     
     public bool isMoving = false;
+    public bool canAttack = false;
     bool isWaiting = false;
     bool startTimer = false;
     bool PLAYONCE = false;
-    bool runPlayerRun = false;
+    public bool runPlayerRun = false;
 
 
 
@@ -72,17 +89,26 @@ public class HideAndSeekEnemy : MonoBehaviour
             {
                 isWaiting = false;
                 startTimer = false;
-                timeBetweenWaypoints = 4f;
             }
-            if (runPlayerRun)
+            if (runPlayerRun && player1Death.isDead == false || player2Death.isDead == false)
             {
+                enemyAnimator.SetBool("Idle", false);
+                enemyAnimator.SetBool("Down", true);
                 hideAndSeekEnemy.transform.position = Vector3.MoveTowards(hideAndSeekEnemy.transform.position, player.transform.position, movementSpeed * 2 * Time.deltaTime);
+            }
+            else if (player1Death.isDead == true && player2Death.isDead == true)
+            {
+                runPlayerRun = false;
             }
             if (Vector3.Distance(hideAndSeekEnemy.transform.position, waypoints[currentWaypointIndex].position) <= 0.1f)
             {
+                enemyAnimator.SetBool("Down", false);
+                enemyAnimator.SetBool("Idle", true);
                 timeBetweenWaypoints -= Time.deltaTime;
                 if (timeBetweenWaypoints <= 0f)
                 {
+                    enemyAnimator.SetBool("Down", true);
+                    enemyAnimator.SetBool("Idle", false);
                     PlayRandomVoiceLine();
                     currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
                     timeBetweenWaypoints = 4f;

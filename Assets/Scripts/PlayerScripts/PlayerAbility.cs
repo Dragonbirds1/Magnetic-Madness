@@ -7,7 +7,7 @@ public class PlayerAbility : MonoBehaviour
 
     public float radius;
     public float currentForce;
-    public LayerMask block, wall;
+    public LayerMask block, wall, lever;
     public float maxAbilityDistance = 10f;
     public float abilityCooldown = 2f;
     private float lastAbilityTime = -Mathf.Infinity;
@@ -16,6 +16,8 @@ public class PlayerAbility : MonoBehaviour
     public Player1Death player1Death;
     public Player2Death player2Death;
     public bool dead = false;
+    public Lever leverScript;
+    public AbilitySwap abilitySwap;
 
     private void Awake()
     {
@@ -58,7 +60,6 @@ public class PlayerAbility : MonoBehaviour
                 
                 
                 RaycastHit2D wallHit = Physics2D.Linecast(transform.position, enemyHit.transform.position, wall);
-
                 // If there are no obstacles between the player and the hit object and it has a Rigidbody2D
                 if (!wallHit && enemyHit.collider.TryGetComponent(out Rigidbody2D hitRigidbody))
                 {
@@ -68,10 +69,32 @@ public class PlayerAbility : MonoBehaviour
                     lastAbilityTime = Time.time;
                     
                 }
+               
             }
             else
             {
                 Debug.Log("No valid target in range for pull ability.");
+            }
+
+            RaycastHit2D leverHit = Physics2D.CircleCast(transform.position, radius, Vector2.zero, 0f, lever);
+            if (leverHit)
+            {
+                RaycastHit2D wallHit2 = Physics2D.Linecast(transform.position, leverHit.transform.position, wall);
+
+                if (!wallHit2 && leverHit && abilitySwap.isPull == true)
+                {
+                    leverScript.isLeverOn = true;
+                    leverScript.isLeverOff = false;
+                    Debug.Log("Pull ability used on lever ");
+                    lastAbilityTime = Time.time;
+                }
+                else if (!wallHit2 && leverHit && abilitySwap.isPull == false)
+                {
+                    leverScript.isLeverOff = true;
+                    leverScript.isLeverOn = false;
+                    Debug.Log("Push ability used on lever ");
+                    lastAbilityTime = Time.time;
+                }
             }
         }
         else if (wackAMole.freezeGameplay == true || dead == true)
