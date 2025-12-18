@@ -25,6 +25,7 @@ public class Lever : MonoBehaviour
     [Header("Animator for Lever")]
     [Tooltip("Animator component for the lever")]
     public Animator leverAnimator;
+    public Animator gate2Animator;
 
     bool isOn = false;
     bool isOff = false;
@@ -58,11 +59,15 @@ public class Lever : MonoBehaviour
         Debug.Log("Lever is On - Door Open, GOOD LUCK >:)");
         leverAnimator.SetBool("Open", true);
         leverAnimator.SetBool("Close", false);
+        gate2Animator.SetBool("Open", true);
+        gate2Animator.SetBool("Close", false);
     }
     void leverOff()
     {
         Debug.Log("Lever is Off - Door Closed, YOU DIRTY CHICKEN >:(");
         leverAnimator.SetBool("Close", true);
         leverAnimator.SetBool("Open", false);
+        gate2Animator.SetBool("Close", true);
+        gate2Animator.SetBool("Open", false);
     }
 }

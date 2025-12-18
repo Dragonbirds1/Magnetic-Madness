@@ -95,5 +95,11 @@ TagManager:
   - name: pipes
     uniqueID: 2628444871
     locked: 0
+  - name: Spark
+    uniqueID: 1585986517
+    locked: 0
+  - name: Stuff
+    uniqueID: 1930521571
+    locked: 0
   m_RenderingLayers:
   - Default

@@ -9,6 +9,8 @@ public class AbilitySwap : MonoBehaviour
     public Player2Death player2Death;
     public bool death = false;
     public bool isPull = true;
+    public GameObject Light1, Light2;
+    public GameObject Light3, Light4;
 
     void Update()
     {
@@ -26,10 +28,18 @@ public class AbilitySwap : MonoBehaviour
         if (Player1Object.currentForce > 0)
         {
             isPull = true;
+            Light1.SetActive(true);
+            Light2.SetActive(false);
+            Light3.SetActive(true);
+            Light4.SetActive(false);
         }
         else if (Player1Object.currentForce < 0)
         {
             isPull = false;
+            Light1.SetActive(false);
+            Light2.SetActive(true);
+            Light3.SetActive(false);
+            Light4.SetActive(true);
         }
     }
 
