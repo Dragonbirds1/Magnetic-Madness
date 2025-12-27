@@ -63,11 +63,6 @@ public class TriggerStuff : MonoBehaviour
         {
             WackAMoleComplete();
         }
-        if (other.CompareTag("HidingSpotTriggerBox"))
-        {
-            hideAndSeekEnemy.runPlayerRun = false;
-            HidingSpotTrigger();
-        }
         if (other.CompareTag("Keycard"))
         {
             canClaimCard = true;
@@ -114,11 +109,5 @@ public class TriggerStuff : MonoBehaviour
         Debug.Log("Completed WackAMole, GOOD JOB :D");
         Debug.Log("BRO REALLY USED THE TRIGGER BOX FOR WACKAMOLE???");
         keycard3.SetActive(true);
-    }
-
-    void HidingSpotTrigger()
-    {
-        Debug.Log("Hiding Spot Trigger Activated");
-        Debug.Log("You found a Hiding Spot! Sneaky Sneaky :D");
     }
 }
