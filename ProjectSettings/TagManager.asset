@@ -41,6 +41,7 @@ TagManager:
   - SafeHideToggleBlock
   - HidingSpotTriggerBox
   - HideZone
+  - DetectionForCam
   layers:
   - Default
   - TransparentFX
@@ -104,6 +105,12 @@ TagManager:
     locked: 0
   - name: HENEM
     uniqueID: 790835015
+    locked: 0
+  - name: wack
+    uniqueID: 3311334087
+    locked: 0
+  - name: SecurityCams
+    uniqueID: 4054901183
     locked: 0
   m_RenderingLayers:
   - Default

@@ -34,6 +34,10 @@ public class TriggerStuff : MonoBehaviour
     [Header("Script Information")]
     [Tooltip("Script Name: HideAndSeekEnemy.cs")]
     public HideAndSeekEnemy hideAndSeekEnemy;
+    [Tooltip("Script Name: MainSecurityCam.cs")]
+    public MainSecurityCam mainSecurityCam;
+    [Tooltip("Script Name: SecurityCam.cs")]
+    public SecurityCam securityCam;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -83,6 +87,10 @@ public class TriggerStuff : MonoBehaviour
             keycard3.SetActive(false);
             Debug.Log("Picked up the Keycard3!");
             // Additional actions for keycard3 pickup can be added here
+        }
+        if (other.CompareTag("DetectionForCam")) 
+        { 
+            //securityCam.isActive = true;
         }
     }
 
