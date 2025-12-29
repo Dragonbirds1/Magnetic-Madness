@@ -60,13 +60,13 @@ public class Player2Death : MonoBehaviour
             abilitySwap.enabled = false;
             abilitySwap.death = true;
             playerAbility.dead = true;
-            boxEnemy.player2IsDead = true;
+            //boxEnemy.player2IsDead = true;
             playerCollider.enabled = false;
-            boxEnemy.patrol = true;
-            boxEnemy.patrol2 = true;
-            boxEnemy.patrol3 = true;
-            boxEnemy.isChasing = false;
-            boxEnemy.chaseTime = 5.0f;
+            //boxEnemy.patrol = true;
+            //boxEnemy.patrol2 = true;
+            //boxEnemy.patrol3 = true;
+            //boxEnemy.isChasing = false;
+            //boxEnemy.chaseTime = 5.0f;
             canMove = false;
             playerAnimator.Play("Player2DeathAnim");
         }

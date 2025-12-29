@@ -4,215 +4,313 @@ using System.Collections;
 
 public class SecurityCam : MonoBehaviour
 {
-    enum CamState { Patrol, Alert, MakeSure, Search }
+    enum CamState { Patrol, MakeSure, Alert, Search }
     CamState currentState = CamState.Patrol;
 
-    [Header("Rotation Settings")]
-    public float rotationSpeed = 30f;
+    [Header("Rotation")]
     public float leftLimit = -206f;
     public float rightLimit = -154f;
+    public float patrolSpeed = 30f;
 
     private float currentAngle;
-    private int rotationDirection = 1;
+    private float targetAngle;
+    private int dir = 1;
 
     [Header("Smoothing")]
-    public float rotationSmoothSpeed = 6f;
-
-    private float targetAngle;
-
-
-    [Header("Light Settings")]
-    public Light2D spotlight;
+    public float patrolSmooth = 4f;
+    public float alertSmooth = 10f;
+    public float searchSmooth = 5f;
 
     [Header("Detection")]
     public Transform player;
     public float detectionDistance = 8f;
+    public float viewAngle = 45f;
     public LayerMask obstacleMask;
 
-    [Header("Field of View")]
-    public float viewAngle = 45f; // half-angle of spotlight cone
-
-    [Header("Make Sure Settings")]
-    public float makeSureDuration = 1.25f;
-    private float makeSureTimer;
-
-    [Header("Search Settings")]
+    [Header("Timing")]
+    public float makeSureMin = 1f;
+    public float makeSureMax = 1.5f;
     public float searchDuration = 3f;
+
+    private float makeSureTimer;
     private float searchTimer;
-
     private float lastSeenAngle;
+    private bool playerDetected;
 
+    [Header("Light")]
+    public Light2D spotlight;
+    public float lightSmooth = 6f;
+
+    public Color patrolColor = Color.white;
+    public Color makeSureColor = Color.yellow;
+    public Color alertColor = Color.red;
+    public Color searchColor = new Color(1f, 0.5f, 0f);
+
+    private Color targetLight;
+
+    [Header("Startup Delay")]
+    public float startupDelay = 0.5f; // seconds
     private bool canDetect = false;
+
+    [Header("SFX")]
+    public AudioSource audioSource;
+    public AudioClip patrolSFX;
+    public AudioClip makeSureSFX;
+    public AudioClip alertSFX;
+    public AudioClip searchSFX;
+
+    [Header("Audio Distance Settings")]
+    public float maxHearingDistance = 8f;      // for Patrol/Search/MakeSure
+    public float alertMaxHearingDistance = 12f; // for Alert
+    public float minVolume = 0f;
+    public float maxVolume = 1f;
 
     IEnumerator Start()
     {
         currentAngle = transform.eulerAngles.z;
         targetAngle = currentAngle;
-        yield return null; // wait 1 frame
+        spotlight.color = patrolColor;
+
+        yield return new WaitForSeconds(startupDelay);
         canDetect = true;
+
+        EnterPatrol();
     }
 
     void Update()
     {
-        DetectPlayer();
+        if (canDetect)
+            HandleDetection();
 
         switch (currentState)
         {
-            case CamState.Patrol:
-                Patrol();
-                break;
-
-            case CamState.Alert:
-                FollowPlayer();
-                break;
-
-            case CamState.MakeSure:
-                MakeSure();
-                break;
-
-            case CamState.Search:
-                Search();
-                break;
+            case CamState.Patrol: Patrol(); break;
+            case CamState.MakeSure: MakeSure(); break;
+            case CamState.Alert: Alert(); break;
+            case CamState.Search: Search(); break;
         }
+
+        RotateSmooth();
+        UpdateLight();
+        UpdateVolumeBasedOnDistance();
     }
 
-    // ---------------- DETECTION ----------------
-    void DetectPlayer()
+    // ================= DETECTION =================
+    bool PlayerInSight()
     {
-        if (!canDetect) return;
-
-        if (player == null) return;
+        if (player == null) return false;
 
         Vector2 dirToPlayer = player.position - spotlight.transform.position;
+        float distance = dirToPlayer.magnitude;
 
-        // Distance check
-        if (dirToPlayer.magnitude > detectionDistance)
-        {
-            if (currentState == CamState.Alert)
-                EnterMakeSure();
-            return;
-        }
+        if (distance > detectionDistance) return false;
 
-        // 🔑 ANGLE CHECK (prevents instant detection)
-        Vector2 forward = spotlight.transform.right;
-        float angleToPlayer = Vector2.Angle(forward, dirToPlayer);
+        Vector2 forward = spotlight.transform.up;
+        float angle = Vector2.Angle(forward, dirToPlayer);
+        if (angle > viewAngle) return false;
 
-        if (angleToPlayer > viewAngle)
-        {
-            if (currentState == CamState.Alert)
-                EnterMakeSure();
-            return;
-        }
-
-        // Line-of-sight check
         RaycastHit2D hit = Physics2D.Raycast(
             spotlight.transform.position,
             dirToPlayer.normalized,
-            detectionDistance,
+            distance,
             obstacleMask
         );
 
-        Debug.DrawRay(spotlight.transform.position, dirToPlayer, Color.red);
+        if (hit.collider != null) return false;
 
-        if (hit && hit.transform == player)
+        return true;
+    }
+
+    void HandleDetection()
+    {
+        if (player == null) return;
+        if (currentState == CamState.MakeSure) return;
+
+        if (PlayerInSight())
         {
-            lastSeenAngle = Mathf.Atan2(dirToPlayer.y, dirToPlayer.x) * Mathf.Rad2Deg - 90f;
-            currentState = CamState.Alert;
+            playerDetected = true;
+
+            if (currentState == CamState.Patrol || currentState == CamState.Search)
+            {
+                EnterMakeSure();
+                Vector2 dirToPlayer = player.position - spotlight.transform.position;
+                lastSeenAngle = Mathf.Atan2(dirToPlayer.y, dirToPlayer.x) * Mathf.Rad2Deg - 90f;
+            }
         }
         else
         {
+            playerDetected = false;
+
             if (currentState == CamState.Alert)
                 EnterMakeSure();
         }
     }
 
-
-    // ---------------- STATES ----------------
+    // ================= STATES =================
     void Patrol()
     {
-        rotationSmoothSpeed = 4f;
-
-        currentAngle += rotationSpeed * rotationDirection * Time.deltaTime;
-
-        if (currentAngle >= rightLimit)
-        {
-            currentAngle = rightLimit;
-            rotationDirection = -1;
-        }
-        else if (currentAngle <= leftLimit)
-        {
-            currentAngle = leftLimit;
-            rotationDirection = 1;
-        }
-
-        ApplyRotation(currentAngle);
-    }
-
-    void FollowPlayer()
-    {
-        Debug.Log("ALERT: Player Detected!");
-        rotationSmoothSpeed = 10f;
-
-        Vector2 dir = player.position - spotlight.transform.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-
-        lastSeenAngle = angle;
-        ApplyRotation(angle);
+        targetAngle += patrolSpeed * dir * Time.deltaTime;
+        if (targetAngle >= rightLimit) { targetAngle = rightLimit; dir = -1; }
+        if (targetAngle <= leftLimit) { targetAngle = leftLimit; dir = 1; }
     }
 
     void MakeSure()
     {
+        targetAngle = lastSeenAngle;
         makeSureTimer -= Time.deltaTime;
-
-        // Hold steady on last seen position
-        ApplyRotation(lastSeenAngle);
 
         if (makeSureTimer <= 0f)
         {
-            EnterSearch();
+            if (playerDetected)
+                EnterAlert();
+            else
+                EnterSearch();
+        }
+    }
+
+    void Alert()
+    {
+        if (playerDetected)
+        {
+            Vector2 dirToPlayer = player.position - spotlight.transform.position;
+            targetAngle = Mathf.Atan2(dirToPlayer.y, dirToPlayer.x) * Mathf.Rad2Deg - 90f;
+            lastSeenAngle = targetAngle;
+        }
+        else
+        {
+            EnterMakeSure();
         }
     }
 
     void Search()
     {
-        rotationSmoothSpeed = 5f;
-
         searchTimer -= Time.deltaTime;
-
-        float searchAngle = lastSeenAngle + Mathf.Sin(Time.time * 2f) * 25f;
-        ApplyRotation(searchAngle);
+        targetAngle = lastSeenAngle + Mathf.Sin(Time.time * 2f) * 25f;
 
         if (searchTimer <= 0f)
-        {
-            currentState = CamState.Patrol;
-        }
+            EnterPatrol();
     }
 
-    // ---------------- HELPERS ----------------
+    // ================= HELPERS =================
     void EnterMakeSure()
     {
+        if (currentState == CamState.MakeSure) return;
+        StopAudio();
         currentState = CamState.MakeSure;
-        makeSureTimer = makeSureDuration;
+        makeSureTimer = Random.Range(makeSureMin, makeSureMax);
+        PlayStateAudio(makeSureSFX, false);
     }
 
     void EnterSearch()
     {
+        StopAudio();
         currentState = CamState.Search;
         searchTimer = searchDuration;
+        PlayStateAudio(searchSFX, true);
     }
 
-    void ApplyRotation(float angle)
+    void EnterAlert()
     {
-        targetAngle = angle;
+        StopAudio();
+        currentState = CamState.Alert;
+        PlayStateAudio(alertSFX, false);
+    }
 
-        currentAngle = Mathf.LerpAngle(
-            currentAngle,
-            targetAngle,
-            rotationSmoothSpeed * Time.deltaTime
-        );
+    void EnterPatrol()
+    {
+        StopAudio();
+        currentState = CamState.Patrol;
+        PlayStateAudio(patrolSFX, true);
+    }
 
+    void RotateSmooth()
+    {
+        float smooth = patrolSmooth;
+        if (currentState == CamState.Alert) smooth = alertSmooth;
+        if (currentState == CamState.Search) smooth = searchSmooth;
+
+        currentAngle = Mathf.LerpAngle(currentAngle, targetAngle, smooth * Time.deltaTime);
         Quaternion rot = Quaternion.Euler(0, 0, currentAngle);
         transform.rotation = rot;
         spotlight.transform.rotation = rot;
+    }
+
+    void UpdateLight()
+    {
+        switch (currentState)
+        {
+            case CamState.Patrol: targetLight = patrolColor; break;
+            case CamState.MakeSure: targetLight = makeSureColor; break;
+            case CamState.Alert: targetLight = alertColor; break;
+            case CamState.Search: targetLight = searchColor; break;
+        }
+
+        spotlight.color = Color.Lerp(spotlight.color, targetLight, lightSmooth * Time.deltaTime);
+    }
+
+    // ================= AUDIO =================
+    void PlayStateAudio(AudioClip clip, bool loop)
+    {
+        if (audioSource == null || clip == null) return;
+
+        audioSource.loop = loop;
+        audioSource.clip = clip;
+        audioSource.Play();
+    }
+
+    void StopAudio()
+    {
+        if (audioSource == null) return;
+        audioSource.Stop();
+        audioSource.clip = null;
+    }
+
+    void UpdateVolumeBasedOnDistance()
+    {
+        if (audioSource == null || player == null || !audioSource.isPlaying) return;
+
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        float effectiveMaxDistance = (currentState == CamState.Alert) ? alertMaxHearingDistance : maxHearingDistance;
+
+        float t = Mathf.Clamp01(distance / effectiveMaxDistance); // 0 = close, 1 = far
+        audioSource.volume = Mathf.Lerp(maxVolume, minVolume, t);
+    }
+
+    // ================= FOV DEBUG =================
+    void OnDrawGizmosSelected()
+    {
+        if (spotlight == null) return;
+
+        Vector3 position = spotlight.transform.position;
+        Vector3 forward = spotlight.transform.up;
+
+        // FOV lines
+        Gizmos.color = Color.green;
+        Quaternion leftRotation = Quaternion.AngleAxis(-viewAngle, Vector3.forward);
+        Quaternion rightRotation = Quaternion.AngleAxis(viewAngle, Vector3.forward);
+
+        Vector3 leftDir = leftRotation * forward;
+        Vector3 rightDir = rightRotation * forward;
+
+        Gizmos.DrawLine(position, position + leftDir * detectionDistance);
+        Gizmos.DrawLine(position, position + rightDir * detectionDistance);
+
+        int segments = 20;
+        for (int i = 0; i <= segments; i++)
+        {
+            float t = (float)i / segments;
+            float angle = Mathf.Lerp(-viewAngle, viewAngle, t);
+            Vector3 dir = Quaternion.AngleAxis(angle, Vector3.forward) * forward;
+            Gizmos.DrawLine(position, position + dir * detectionDistance);
+        }
+
+        // Max hearing distance visualization
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(position, maxHearingDistance);
+
+        // Separate Alert max hearing distance
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(position, alertMaxHearingDistance);
     }
 }

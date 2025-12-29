@@ -112,5 +112,11 @@ TagManager:
   - name: SecurityCams
     uniqueID: 4054901183
     locked: 0
+  - name: BoxEnem
+    uniqueID: 1602849105
+    locked: 0
+  - name: NutCrackerEnem
+    uniqueID: 3405308635
+    locked: 0
   m_RenderingLayers:
   - Default

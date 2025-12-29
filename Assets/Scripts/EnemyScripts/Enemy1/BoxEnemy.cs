@@ -1,252 +1,266 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using UnityEditor;
-using UnityEditor.Tilemaps;
 using UnityEngine;
+using Pathfinding;
 
+[RequireComponent(typeof(Seeker))]
+[RequireComponent(typeof(AIPath))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 public class BoxEnemy : MonoBehaviour
 {
-    public float speed = 3.0f;
-    public float waitTime = 1;
-    public float chaseTime = 5;
+    [Header("Patrol Nodes")]
     public List<Transform> waypoints;
-    private int currentWaypointIndex = 0;
-    private Rigidbody2D rb;
-    private Vector3 currentPosition;
-    private Vector3 currentVelocity;
-    private Vector3 currentRotation;
-    private Vector3 currentRotationDirection;
-    private Vector3 currentVelocityDirection;
-    private bool playerFound = false, player2Found = false;
-    public bool isChasing = false;
+    private Transform currentTarget;
+
+    [Header("Chase")]
     public GameObject player, player2;
-    public float chaseSpeed = 5.0f;
-    public float detectionRange = 5.0f;
-    public bool patrol = true;
-    public bool patrol2 = true;
-    public bool patrol3 = true;
-    public float randomAction;
-    public float sleepTime = 3.0f;
-    bool sleepTimeChange = false;
-    public float timeTillDash = 2.0f;
-    public float dashTime = 1.0f;
-    public WackAMole wackAMole;
-    public Player1Death player1Death;
-    public Player2Death player2Death;
-    public bool player1IsDead;
-    public bool player2IsDead;
+    public bool player1IsDead, player2IsDead;
+    public float detectionRange = 5f;
+
+    [Header("Animations")]
     public Animator enemyAnim;
-    public float wakeTime = 0.0f;
-    bool hasWoken = false;
 
+    [Header("Sleep / Idle")]
+    public float minSleepTime = 2f, maxSleepTime = 5f;
+    public float minIdleTime = 1f, maxIdleTime = 3f;
+    private bool isSleeping = false, isIdling = false;
+    private float sleepTimer = 0f, idleTimer = 0f;
+    [Range(0f, 1f)] public float baseSleepChance = 0.3f;
+    public float sleepChanceIncrement = 0.05f;
+    private float timeSinceLastSleep = 0f;
 
+    [Header("Chase / Dash")]
+    public float chaseSpeed = 3f;
+    public float dashSpeed = 5f;
+    public float timeTillDash = 2f, dashTime = 1f;
 
+    [Header("Gameplay Freeze")]
+    public WackAMole wackAMole;
 
+    private bool playerFound = false, player2Found = false, isChasing = false;
+    private float chaseTimer = 5f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private AIPath aiPath;
+
+    [Header("Wall Push")]
+    public LayerMask wallLayer;
+    public float pushStrength = 0.05f;
+    public float pushRadius = 0.1f;
+
+    void Awake()
+    {
+        aiPath = GetComponent<AIPath>();
+
+        aiPath.canMove = true;
+        aiPath.canSearch = true;
+        aiPath.updateRotation = false; // top-down 2D
+        aiPath.enableRotation = false;
+        aiPath.endReachedDistance = 0.1f;
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.freezeRotation = true;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+    }
+
     void Start()
     {
-        randomAction = Random.Range(0f, 10f);
-        transform.position = waypoints[0].position;
+        if (waypoints.Count > 0)
+            PickRandomNode();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (wackAMole.freezeGameplay == false)
-        {
-            if (hasWoken)
-            {
-                wakeTime += Time.deltaTime;
-                if (wakeTime >= 0.517f)
-                {
-                    hasWoken = false;
-                    wakeTime = 0.0f;
-                    enemyAnim.SetBool("isWake", false);
-                    enemyAnim.SetBool("isIdle", true);
-                }
-            }
-            if (sleepTimeChange)
-            {
-                sleepTime -= Time.deltaTime;
-                enemyAnim.SetBool("isSleep", true);
-                enemyAnim.SetBool("isWalk", false);
-            }
-            else if (!sleepTimeChange)
-            {
-                enemyAnim.SetBool("isSleep", false);
-                enemyAnim.SetBool("isWalk", true);
-                enemyAnim.SetBool("isIdle", false);
-                patrol = true;
-            }
-            if (sleepTime <= 0)
-            {
-                hasWoken = true;
-                enemyAnim.SetBool("isWake", true);
-                enemyAnim.SetBool("isSleep", false);
-                sleepTimeChange = false;
-                randomAction = Random.Range(0f, 10f);
-                sleepTime = 3.0f;
-            }
-            if (patrol2 == false)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, player.transform.position, chaseSpeed * Time.deltaTime);
-                dash();
-                chaseTime -= Time.deltaTime;
-            }
-            if (patrol3 == false)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, player2.transform.position, chaseSpeed * Time.deltaTime);
-                dash();
-                chaseTime -= Time.deltaTime;
-            }
-            if (chaseTime <= 0)
-            {
-                enemyAnim.SetBool("isWalk", true);
-                enemyAnim.SetBool("isIdle", false);
-                isChasing = false;
-                patrol = true;
-                patrol2 = true;
-                patrol3 = true;
-                chaseTime = 5;
-            }
-            if (patrol)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, speed * Time.deltaTime);
-                if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.1f)
-                {
-                    enemyAnim.SetBool("isWalk", true);
-                    enemyAnim.SetBool("isIdle", false);
-                    if (randomAction <= 5f)
-                    {
-                        enemyAnim.SetBool("isSleep", true);
-                        enemyAnim.SetBool("isWalk", false);
-                        sleeping();
+        if (wackAMole.freezeGameplay) return;
 
-                    }
-                    else if (randomAction > 5f && randomAction <= 10f)
-                    {
-                        enemyAnim.SetBool("isIdle", true);
-                        enemyAnim.SetBool("isWalk", false);
-                        waitTime -= Time.deltaTime;
-                        if (waitTime <= 0)
-                        {
-                            enemyAnim.SetBool("isIdle", false);
-                            enemyAnim.SetBool("isWalk", true);
-                            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count;
-                            Search();
-                            Change();
-                            waitTime = 3;
-                        }
-                    }
-                }
-            }
-        }
-        else if (wackAMole.freezeGameplay == true)
+        if (!isSleeping && !isIdling)
+            timeSinceLastSleep += Time.deltaTime;
+
+        // Detect players
+        playerFound = PlayerInRange(player, player1IsDead);
+        player2Found = PlayerInRange(player2, player2IsDead);
+
+        if (playerFound || player2Found)
         {
+            isChasing = true;
+            chaseTimer -= Time.deltaTime;
+        }
+        else if (chaseTimer <= 0f)
+        {
+            isChasing = false;
+            chaseTimer = 5f;
+        }
+
+        HandleState();
+        PushFromWalls(); // handle tiny overlaps
+    }
+
+    bool PlayerInRange(GameObject target, bool isDead)
+    {
+        return target != null && !isDead && Vector2.Distance(transform.position, target.transform.position) <= detectionRange;
+    }
+
+    void HandleState()
+    {
+        if (isChasing)
+            HandleChase();
+        else
+            PatrolNode();
+    }
+
+    void HandleChase()
+    {
+        Vector3 targetPos = playerFound ? player.transform.position :
+                             player2Found ? player2.transform.position : transform.position;
+
+        aiPath.maxSpeed = chaseSpeed;
+        aiPath.destination = targetPos;
+        enemyAnim.SetBool("isWalk", true);
+
+        Dash();
+    }
+
+    void PatrolNode()
+    {
+        if (currentTarget == null || waypoints.Count == 0) return;
+
+        // Sleep
+        if (isSleeping)
+        {
+            sleepTimer -= Time.deltaTime;
+            enemyAnim.SetBool("isSleep", true);
+            enemyAnim.SetBool("isWalk", false);
+            enemyAnim.SetBool("isIdle", false);
+
+            if (sleepTimer <= 0f) WakeUp();
             return;
         }
-    }
-    void Search() // Search for player within detection range
-    {
-            Debug.Log("Searching for player");
-            if (Vector3.Distance(transform.position, player.transform.position) <= detectionRange && player1IsDead == false)
-            {
-                playerFound = true;
-            }
-            else if (Vector3.Distance(transform.position, player.transform.position) > detectionRange || player1IsDead == true)
+
+        // Idle
+        if (isIdling)
         {
-                playerFound = false;
-            }
-            if (Vector3.Distance(transform.position, player2.transform.position) <= detectionRange && player2IsDead == false)
-            {
-                player2Found = true;
-            }
-            else if (Vector3.Distance(transform.position, player2.transform.position) > detectionRange || player2IsDead == true)
-        {
-                player2Found = false;
-            }
-            if (!playerFound)// || player1Death.isDead == true)
-            {
-                Debug.Log("Player not found, continuing patrol");
-                patrol = true;
+            idleTimer -= Time.deltaTime;
+            enemyAnim.SetBool("isIdle", true);
+            enemyAnim.SetBool("isWalk", false);
+            enemyAnim.SetBool("isSleep", false);
 
-            }
-            else if (playerFound)// && player1Death.isDead == false)
+            if (idleTimer <= 0f)
             {
-                Debug.Log("Player found, engaging");
-                isChasing = true;
-                if (isChasing)
-                {
-                    enemyAnim.SetBool("isWalk", true);
-                    patrol = false;
-                    patrol2 = false;
-                    patrol3 = true;
-                }
-
+                isIdling = false;
+                PickRandomNode();
             }
-            if (!player2Found)// || player2Death.isDead == true)
-            {
-                Debug.Log("Player2 not found, continuing patrol");
-                patrol = true;
-                enemyAnim.SetBool("isWalk", true);
-                enemyAnim.SetBool("isIdle", false);
-        }
-            else if (player2Found)// && player2Death.isDead == false)
-            {
-                enemyAnim.SetBool("isWalk", true);
-                Debug.Log("Player2 found, engaging");
-                isChasing = true;
-                if (isChasing)
-                {
-                    patrol = false;
-                    patrol2 = true;
-                    patrol3 = false;
-                }
-
-            }
+            return;
         }
 
-    void Change() // Change random action after each waypoint
-    {
-        randomAction = Random.Range(0f, 10f);
-        return;
-    }
+        // Move to node
+        aiPath.maxSpeed = chaseSpeed;
+        aiPath.destination = currentTarget.position;
+        enemyAnim.SetBool("isWalk", true);
+        enemyAnim.SetBool("isIdle", false);
+        enemyAnim.SetBool("isSleep", false);
 
-    void sleeping() // Enemy sleep mechanic
-    {
-        Debug.Log("Enemy is sleeping");
-        patrol = false;
-        sleepTimeChange = true;
-        if (sleepTime <= 0)
+        if (!aiPath.pathPending && aiPath.reachedEndOfPath)
         {
-            patrol = true;
-            
+            float currentSleepChance = Mathf.Clamp(baseSleepChance + timeSinceLastSleep * sleepChanceIncrement, 0f, 0.9f);
+            if (Random.value < currentSleepChance)
+            {
+                StartSleep();
+                timeSinceLastSleep = 0f;
+            }
+            else
+            {
+                StartIdle();
+            }
         }
     }
 
-    void dash() // Dash mechanic for enemy when chasing player
+    void StartSleep()
+    {
+        isSleeping = true;
+        sleepTimer = Random.Range(minSleepTime, maxSleepTime);
+        enemyAnim.SetBool("isSleep", true);
+        enemyAnim.SetBool("isWalk", false);
+        enemyAnim.SetBool("isIdle", false);
+    }
+
+    void WakeUp()
+    {
+        isSleeping = false;
+        enemyAnim.SetBool("isSleep", false);
+        enemyAnim.SetBool("isWake", true);
+        StartCoroutine(WakeCoroutine());
+    }
+
+    IEnumerator WakeCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        enemyAnim.SetBool("isWake", false);
+        enemyAnim.SetBool("isIdle", true);
+        PickRandomNode();
+    }
+
+    void StartIdle()
+    {
+        isIdling = true;
+        idleTimer = Random.Range(minIdleTime, maxIdleTime);
+        enemyAnim.SetBool("isIdle", true);
+        enemyAnim.SetBool("isWalk", false);
+        enemyAnim.SetBool("isSleep", false);
+    }
+
+    void PickRandomNode()
+    {
+        if (waypoints.Count == 0) return;
+        Transform newTarget = currentTarget;
+        int attempts = 0;
+
+        while (newTarget == currentTarget && attempts < 10)
+        {
+            newTarget = waypoints[Random.Range(0, waypoints.Count)];
+            attempts++;
+        }
+
+        currentTarget = newTarget;
+    }
+
+    void Dash()
     {
         timeTillDash -= Time.deltaTime;
         if (timeTillDash <= 0)
         {
-            chaseSpeed = 8.0f;
+            aiPath.maxSpeed = dashSpeed;
             dashTime -= Time.deltaTime;
             if (dashTime <= 0)
             {
-                chaseSpeed = 5.0f;
-                timeTillDash = 2.0f;
-                dashTime = 1.0f;
+                aiPath.maxSpeed = chaseSpeed;
+                timeTillDash = 2f;
+                dashTime = 1f;
             }
         }
     }
 
-    private void OnDrawGizmosSelected() // Visualize detection range in editor
+    // Small push to avoid minor wall overlaps
+    void PushFromWalls()
+    {
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, pushRadius, wallLayer);
+        if (hit != null)
+        {
+            Vector2 pushDir = ((Vector2)transform.position - (Vector2)hit.ClosestPoint(transform.position)).normalized;
+            transform.position += (Vector3)(pushDir * pushStrength);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+        if (waypoints != null)
+        {
+            Gizmos.color = Color.green;
+            foreach (var wp in waypoints)
+                Gizmos.DrawSphere(wp.position, 0.2f);
+        }
     }
 }
-
-
