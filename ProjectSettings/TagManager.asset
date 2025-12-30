@@ -88,9 +88,6 @@ TagManager:
   - name: puzzle lay out pushing box
     uniqueID: 668214373
     locked: 0
-  - name: players
-    uniqueID: 563213827
-    locked: 0
   - name: enviorment
     uniqueID: 3576279801
     locked: 0
@@ -117,6 +114,9 @@ TagManager:
     locked: 0
   - name: NutCrackerEnem
     uniqueID: 3405308635
+    locked: 0
+  - name: players
+    uniqueID: 563213827
     locked: 0
   m_RenderingLayers:
   - Default

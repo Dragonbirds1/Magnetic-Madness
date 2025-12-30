@@ -49,6 +49,10 @@ public class WackAMole: MonoBehaviour
     bool canToggleGame = true;
     public bool freezeGameplay = false;
     public Animator buttonAnim1, buttonAnim2, buttonAnim3, buttonAnim4, buttonAnim5, buttonAnim6;
+    public TriggerStuff triggerStuff;
+    bool YAY = false;
+    bool BOO = false;
+    public AudioSource mainMusic;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -77,6 +81,7 @@ public class WackAMole: MonoBehaviour
         {
             if (Input.GetKeyDown(LeaveWackAMoleKey))
             {
+                mainMusic.UnPause();
                 freezeGameplay = false;
                 score = 0;
                 canToggleGame = true;
@@ -101,6 +106,18 @@ public class WackAMole: MonoBehaviour
                 buttonAnim4.SetBool("IsFlash", false);
                 buttonAnim5.SetBool("IsFlash", false);
                 buttonAnim6.SetBool("IsFlash", false);
+                if (YAY == true && BOO == false)
+                {
+                    triggerStuff.WackAMoleComplete();
+                    YAY = false;
+                    BOO = false;
+                }
+                else if (BOO == true && YAY == false)
+                {
+                    YAY = false;
+                    BOO = false;
+                    return;
+                }
             }
         }
 
@@ -154,10 +171,14 @@ public class WackAMole: MonoBehaviour
                 if (score >= 10)
                 {
                     Winner();
+                    YAY = true;
+                    BOO = false;
                 }
                 else if (score < 10)
                 {
                     Looser();
+                    BOO = true;
+                    YAY = false;
                 }
             }
         }
@@ -272,6 +293,9 @@ public class WackAMole: MonoBehaviour
 
     public void StartGame()
     {
+        mainMusic.Pause();
+        YAY = false;
+        BOO = false;
         freezeGameplay = true;
         canToggleGame = false;
         Playing = true;

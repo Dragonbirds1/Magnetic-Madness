@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
@@ -48,6 +48,23 @@ public class BoxEnemy : MonoBehaviour
     public float pushStrength = 0.05f;
     public float pushRadius = 0.1f;
 
+    [Header("Camera Investigation")]
+    public float investigateDuration = 3f;
+    public float investigateRadius = 1.5f;
+    public float lookAroundSpeed = 120f;
+
+    private bool investigatingCamera = false;
+    private float investigateTimer;
+    private float investigateAngle;
+
+    private Vector2 currentInvestigatePoint;
+    private bool hasInvestigatePoint = false;
+
+    private bool respondingToCamera = false;
+    private Vector2 cameraAlertPosition;
+    public float cameraResponseTime = 20f;
+    private float cameraTimer;
+
     void Awake()
     {
         aiPath = GetComponent<AIPath>();
@@ -92,8 +109,54 @@ public class BoxEnemy : MonoBehaviour
             chaseTimer = 5f;
         }
 
+        if (respondingToCamera)
+        {
+            aiPath.destination = cameraAlertPosition;
+
+            // Close enough → start investigating
+            if (!aiPath.pathPending && aiPath.reachedEndOfPath)
+            {
+                respondingToCamera = false;
+                StartCameraInvestigation();
+            }
+
+            return;
+        }
+
+        if (investigatingCamera)
+        {
+            InvestigateCamera();
+            return;
+        }
+
         HandleState();
         PushFromWalls(); // handle tiny overlaps
+    }
+
+    void OnEnable()
+    {
+        SecurityAlertSystem.OnCameraAlert += OnCameraAlert;
+    }
+
+    void OnDisable()
+    {
+        SecurityAlertSystem.OnCameraAlert -= OnCameraAlert;
+    }
+
+    void OnCameraAlert(Vector2 camPos)
+    {
+        if (isChasing) return;
+
+        respondingToCamera = true;
+        investigatingCamera = false;
+
+        cameraAlertPosition = camPos;
+        cameraTimer = cameraResponseTime;
+
+        aiPath.destination = camPos;
+        aiPath.maxSpeed = chaseSpeed;
+
+        enemyAnim.SetBool("isWalk", true);
     }
 
     bool PlayerInRange(GameObject target, bool isDead)
@@ -251,6 +314,54 @@ public class BoxEnemy : MonoBehaviour
         }
     }
 
+    void StartCameraInvestigation()
+    {
+        investigatingCamera = true;
+        investigateTimer = investigateDuration;
+
+        aiPath.canMove = true;
+        aiPath.maxSpeed = chaseSpeed * 0.5f;
+
+        PickNewInvestigatePoint();
+
+        enemyAnim.SetBool("isWalk", true);
+        enemyAnim.SetBool("isIdle", false);
+        enemyAnim.SetBool("isSleep", false);
+    }
+
+    void PickNewInvestigatePoint()
+    {
+        Vector2 randomOffset = Random.insideUnitCircle.normalized * investigateRadius;
+        currentInvestigatePoint = cameraAlertPosition + randomOffset;
+
+        aiPath.destination = currentInvestigatePoint;
+        hasInvestigatePoint = true;
+    }
+
+    void InvestigateCamera()
+    {
+        investigateTimer -= Time.deltaTime;
+
+        if (!aiPath.pathPending && aiPath.reachedEndOfPath)
+        {
+            PickNewInvestigatePoint();
+        }
+
+        if (investigateTimer <= 0f)
+        {
+            EndCameraInvestigation();
+        }
+    }
+
+    void EndCameraInvestigation()
+    {
+        investigatingCamera = false;
+        hasInvestigatePoint = false;
+
+        aiPath.maxSpeed = chaseSpeed;
+        PickRandomNode();
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -261,6 +372,20 @@ public class BoxEnemy : MonoBehaviour
             Gizmos.color = Color.green;
             foreach (var wp in waypoints)
                 Gizmos.DrawSphere(wp.position, 0.2f);
+        }
+
+        if (respondingToCamera)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, cameraAlertPosition);
+            Gizmos.DrawSphere(cameraAlertPosition, 0.3f);
+
+            if (investigatingCamera)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(cameraAlertPosition, investigateRadius);
+                Gizmos.DrawSphere(currentInvestigatePoint, 0.15f);
+            }
         }
     }
 }

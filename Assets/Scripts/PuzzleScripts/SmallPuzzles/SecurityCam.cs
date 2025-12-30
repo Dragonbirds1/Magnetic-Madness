@@ -7,6 +7,8 @@ public class SecurityCam : MonoBehaviour
     enum CamState { Patrol, MakeSure, Alert, Search }
     CamState currentState = CamState.Patrol;
 
+    private bool hasAlerted = false;
+
     [Header("Rotation")]
     public float leftLimit = -206f;
     public float rightLimit = -154f;
@@ -124,27 +126,31 @@ public class SecurityCam : MonoBehaviour
     void HandleDetection()
     {
         if (player == null) return;
-        if (currentState == CamState.MakeSure) return;
 
-        if (PlayerInSight())
+        bool seenNow = PlayerInSight();
+        playerDetected = seenNow;
+
+        if (seenNow)
         {
-            playerDetected = true;
+            Vector2 dirToPlayer = player.position - spotlight.transform.position;
+            lastSeenAngle = Mathf.Atan2(dirToPlayer.y, dirToPlayer.x) * Mathf.Rad2Deg - 90f;
 
+            // Only enter MakeSure from Patrol or Search
             if (currentState == CamState.Patrol || currentState == CamState.Search)
             {
                 EnterMakeSure();
-                Vector2 dirToPlayer = player.position - spotlight.transform.position;
-                lastSeenAngle = Mathf.Atan2(dirToPlayer.y, dirToPlayer.x) * Mathf.Rad2Deg - 90f;
             }
         }
         else
         {
-            playerDetected = false;
-
+            // Lost sight while in Alert → MakeSure
             if (currentState == CamState.Alert)
+            {
                 EnterMakeSure();
+            }
         }
     }
+
 
     // ================= STATES =================
     void Patrol()
@@ -195,6 +201,10 @@ public class SecurityCam : MonoBehaviour
     void EnterMakeSure()
     {
         if (currentState == CamState.MakeSure) return;
+
+        if (currentState == CamState.Alert)
+            ExitAlert();
+
         StopAudio();
         currentState = CamState.MakeSure;
         makeSureTimer = Random.Range(makeSureMin, makeSureMax);
@@ -203,6 +213,9 @@ public class SecurityCam : MonoBehaviour
 
     void EnterSearch()
     {
+        if (currentState == CamState.Alert)
+            ExitAlert();
+
         StopAudio();
         currentState = CamState.Search;
         searchTimer = searchDuration;
@@ -211,13 +224,27 @@ public class SecurityCam : MonoBehaviour
 
     void EnterAlert()
     {
+        if (hasAlerted) return;
+
         StopAudio();
+
+        hasAlerted = true;
         currentState = CamState.Alert;
-        PlayStateAudio(alertSFX, false);
+
+        PlayStateAudio(alertSFX, true);
+
+        Debug.Log($"CAM ALERT FIRED by {name}");
+        SecurityAlertSystem.OnCameraAlert?.Invoke(transform.position);
+    }
+
+    void ExitAlert()
+    {
+        hasAlerted = false;
     }
 
     void EnterPatrol()
     {
+        ExitAlert();
         StopAudio();
         currentState = CamState.Patrol;
         PlayStateAudio(patrolSFX, true);

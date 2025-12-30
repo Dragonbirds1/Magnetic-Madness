@@ -39,12 +39,21 @@ public class TriggerStuff : MonoBehaviour
     [Tooltip("Script Name: SecurityCam.cs")]
     public SecurityCam securityCam;
 
+    [Header("Animator Settings")]
+    [Tooltip("Animator: DeadBox1")]
+    public Animator deadBox1;
+    [Tooltip("Animator: DeadBox2")]
+    public Animator deadBox2;
+    [Tooltip("Animator: KeycardMove")]
+    public Animator keycardMove;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         //keycard.SetActive(false);
        // keycard2.SetActive(false);
-       // keycard3.SetActive(false);
+        keycard3.SetActive(false);
     }
 
     // Update is called once per frame
@@ -94,7 +103,7 @@ public class TriggerStuff : MonoBehaviour
         }
     }
 
-    void BowlingComplete()
+    public void BowlingComplete()
     {
         bowlingCompleteTrigger.SetActive(false);
         Debug.Log("Bowling Complete Trigger Activated");
@@ -102,7 +111,7 @@ public class TriggerStuff : MonoBehaviour
         keycard2.SetActive(true);
     }
 
-    void MiniGolfComplete()
+    public void MiniGolfComplete()
     {
         miniGolfCompleteTrigger.SetActive(false);
         Debug.Log("MiniGolf Complete Trigger Activated");
@@ -110,12 +119,15 @@ public class TriggerStuff : MonoBehaviour
         keycard.SetActive(true);
     }
 
-    void WackAMoleComplete()
+    public void WackAMoleComplete()
     {
         wackAMoleCompleteTrigger.SetActive(false);
         Debug.Log("WackAMole Complete Trigger Activated");
         Debug.Log("Completed WackAMole, GOOD JOB :D");
         Debug.Log("BRO REALLY USED THE TRIGGER BOX FOR WACKAMOLE???");
         keycard3.SetActive(true);
+        deadBox1.SetBool("MOVE", true);
+        deadBox2.SetBool("MOVE", true);
+        keycardMove.SetBool("MOVE", true);
     }
 }
