@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: bowling ball_0
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 2651586461051615903, guid: ed445c9316d66814db1eb3bb8ee953f0, type: 3}
+  m_Sprite: {fileID: 2651586461051615903, guid: c52e8a61afd533143ba7a05e5ec0b3bd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

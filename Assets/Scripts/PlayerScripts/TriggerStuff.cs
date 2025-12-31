@@ -11,7 +11,10 @@ public class TriggerStuff : MonoBehaviour
     public GameObject wackAMoleCompleteTrigger;
     [Tooltip("Trigger box for hiding spots")]
     public GameObject hidingSpotTrigger;
-
+    [Tooltip("Trigger box for golf and bowling")]
+    public GameObject golfAndBowlingTrigger;
+    [Tooltip("Trigger box for MainMusic on")]
+    public GameObject mainMusicTrigger;
 
     [Header("Item GameObjects")]
     [Tooltip("Keycard GameObject")]
@@ -46,14 +49,24 @@ public class TriggerStuff : MonoBehaviour
     public Animator deadBox2;
     [Tooltip("Animator: KeycardMove")]
     public Animator keycardMove;
+    [Tooltip("Animator: KeycardMove2")]
+    public Animator keycardMove2;
+
+    [Header("Audios")]
+    [Tooltip("Audiosource: MainMusic")]
+    public AudioSource mainMusic;
+    [Tooltip("Audiosource: GameAreaMusic")]
+    public AudioSource gameAreaMusic;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         //keycard.SetActive(false);
-       // keycard2.SetActive(false);
+        keycard2.SetActive(false);
         keycard3.SetActive(false);
+        mainMusicTrigger.SetActive(false);
+        gameAreaMusic.Stop();
     }
 
     // Update is called once per frame
@@ -101,6 +114,20 @@ public class TriggerStuff : MonoBehaviour
         { 
             //securityCam.isActive = true;
         }
+        if (other.CompareTag("TouchBlock")) 
+        { 
+            mainMusic.Stop();
+            gameAreaMusic.Play();
+            golfAndBowlingTrigger.SetActive(false);
+            mainMusicTrigger.SetActive(true);
+        }
+        if (other.CompareTag("MainMusicTriggerBox")) 
+        { 
+            mainMusic.Play();
+            gameAreaMusic.Stop();
+            mainMusicTrigger.SetActive(false);
+            golfAndBowlingTrigger.SetActive(true);
+        }
     }
 
     public void BowlingComplete()
@@ -109,6 +136,7 @@ public class TriggerStuff : MonoBehaviour
         Debug.Log("Bowling Complete Trigger Activated");
         Debug.Log("Completed Bowling, GOOD JOB :D");
         keycard2.SetActive(true);
+        keycardMove2.SetBool("MOVE", true);
     }
 
     public void MiniGolfComplete()

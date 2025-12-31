@@ -53,6 +53,7 @@ public class WackAMole: MonoBehaviour
     bool YAY = false;
     bool BOO = false;
     public AudioSource mainMusic;
+    public KeyCode closeWackAMolePopup;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -132,10 +133,16 @@ public class WackAMole: MonoBehaviour
                     //StartGame();
                     gamePopUp.SetActive(true);
                 }
+                else if (Input.GetKeyDown(closeWackAMolePopup))
+                {
+                    Debug.Log("Wack A Mole Pop Up Deactivated");
+                    gamePopUp.SetActive(false);
+                }
             }
-            else
+            else if (Vector3.Distance(player.transform.position, transform.position) > rangeToStartGame)
             {
                 isAtGame = false;
+                gamePopUp.SetActive(false);
             }
         }
         else if (canToggleGame == false)

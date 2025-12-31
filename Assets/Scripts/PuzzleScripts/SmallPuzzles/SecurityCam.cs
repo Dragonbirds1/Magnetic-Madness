@@ -10,7 +10,7 @@ public class SecurityCam : MonoBehaviour
     private bool hasAlerted = false;
 
     [Header("Rotation")]
-    public float leftLimit = -206f;
+    public float leftLimit = -236f;
     public float rightLimit = -154f;
     public float patrolSpeed = 30f;
 
@@ -25,7 +25,7 @@ public class SecurityCam : MonoBehaviour
 
     [Header("Detection")]
     public Transform player;
-    public float detectionDistance = 8f;
+    public float detectionDistance = 12f;
     public float viewAngle = 45f;
     public LayerMask obstacleMask;
 

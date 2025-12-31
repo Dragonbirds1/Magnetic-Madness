@@ -22,15 +22,25 @@ public class Hole : MonoBehaviour
     [Tooltip("Assign the new course GameObject here to transition to the next course.")]
     public GameObject newCourse;
 
+    [Header("Ball Tp")]
+    [Tooltip("Transform golf ball to new spawn")]
+    public GameObject newSpawn;
+
+    public void Update()
+    {
+        // Get golf ball position
+        float ballPos = Vector2.Distance(transform.position, ball.transform.position);
+
+        // Get spawn position
+        float spawnPos = Vector2.Distance(transform.position, newSpawn.transform.position);
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Ball"))
         {
-            currentCourse.SetActive(false);
             Debug.Log("Ball in the hole!");
-            currentHole.SetActive(false);
-            newHole.SetActive(true);
-            newCourse.SetActive(true);
+            // Tp golf ball to new spawn
+            //ball.transform.position = newSpawn.transform.position;
         }
     }
 }

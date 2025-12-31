@@ -42,6 +42,8 @@ TagManager:
   - HidingSpotTriggerBox
   - HideZone
   - DetectionForCam
+  - MainMusicTriggerBox
+  - TouchBlock
   layers:
   - Default
   - TransparentFX
@@ -55,8 +57,8 @@ TagManager:
   - IgnoreCamera
   - IsPlayer
   - IsLever
-  - 
-  - 
+  - IsGolfBall
+  - Obstacles
   - 
   - 
   - 
@@ -117,6 +119,12 @@ TagManager:
     locked: 0
   - name: players
     uniqueID: 563213827
+    locked: 0
+  - name: GolfBall
+    uniqueID: 2553661077
+    locked: 0
+  - name: 111111111
+    uniqueID: 1238549801
     locked: 0
   m_RenderingLayers:
   - Default
