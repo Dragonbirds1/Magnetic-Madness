@@ -16,7 +16,7 @@ public class BoxEnemy : MonoBehaviour
     [Header("Chase")]
     public GameObject player, player2;
     public bool player1IsDead, player2IsDead;
-    public float detectionRange = 5f;
+    public float detectionRange;
 
     [Header("Animations")]
     public Animator enemyAnim;
