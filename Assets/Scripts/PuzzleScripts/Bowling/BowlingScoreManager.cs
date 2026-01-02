@@ -3,48 +3,42 @@ using System.Collections.Generic;
 
 public class BowlingScoreManager : MonoBehaviour
 {
-    public List<int> rolls = new List<int>();
+    public readonly List<int> rolls = new List<int>();
 
     public void RegisterRoll(int pins)
     {
+        pins = Mathf.Clamp(pins, 0, 10);
         rolls.Add(pins);
-        Debug.Log($"Roll {rolls.Count}: {pins} pins | Total Score: {CalculateScore()}");
+
+        Debug.Log($"Roll {rolls.Count}: {pins} | Total: {CalculateScore()}");
     }
 
-    int CalculateScore()
+    public int CalculateScore()
     {
         int score = 0;
-        int rollIndex = 0;
+        int i = 0;
 
         for (int frame = 0; frame < 10; frame++)
         {
-            if (rollIndex >= rolls.Count)
-                break;
+            if (i >= rolls.Count) break;
 
             // Strike
-            if (rolls[rollIndex] == 10)
+            if (rolls[i] == 10)
             {
-                if (rollIndex + 2 < rolls.Count)
-                    score += 10 + rolls[rollIndex + 1] + rolls[rollIndex + 2];
-
-                rollIndex++;
+                if (i + 2 < rolls.Count) score += 10 + rolls[i + 1] + rolls[i + 2];
+                i += 1;
             }
             // Spare
-            else if (rollIndex + 1 < rolls.Count &&
-                     rolls[rollIndex] + rolls[rollIndex + 1] == 10)
+            else if (i + 1 < rolls.Count && rolls[i] + rolls[i + 1] == 10)
             {
-                if (rollIndex + 2 < rolls.Count)
-                    score += 10 + rolls[rollIndex + 2];
-
-                rollIndex += 2;
+                if (i + 2 < rolls.Count) score += 10 + rolls[i + 2];
+                i += 2;
             }
-            // Open frame
+            // Open
             else
             {
-                if (rollIndex + 1 < rolls.Count)
-                    score += rolls[rollIndex] + rolls[rollIndex + 1];
-
-                rollIndex += 2;
+                if (i + 1 < rolls.Count) score += rolls[i] + rolls[i + 1];
+                i += 2;
             }
         }
 

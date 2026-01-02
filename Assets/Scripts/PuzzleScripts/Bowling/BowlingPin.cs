@@ -1,41 +1,62 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class BowlingPin : MonoBehaviour
 {
-    public bool isKnockedOver;
-    public bool alreadyScored;
+    [Header("Knock Detection")]
+    public float knockMoveDistance = 0.25f;
+    public float knockRotateDegrees = 25f;
+    public float knockSpeed = 2.0f; // if it gets blasted, count it
 
-    Vector3 startPos;
-    Quaternion startRot;
+    [HideInInspector] public bool isKnockedOver;
+    [HideInInspector] public bool alreadyScored;
 
-    public float knockDistance = 0.3f;
+    private Vector3 startPos;
+    private float startZ;
+    private Rigidbody2D rb;
 
     void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        CacheStart();
+    }
+
+    void CacheStart()
+    {
         startPos = transform.position;
-        startRot = transform.rotation;
+        startZ = transform.eulerAngles.z;
     }
 
     void Update()
     {
-        if (!isKnockedOver &&
-            Vector3.Distance(transform.position, startPos) > knockDistance)
-        {
+        if (isKnockedOver) return;
+
+        float moved = Vector2.Distance(transform.position, startPos);
+        float rot = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, startZ));
+
+#if UNITY_6000_0_OR_NEWER
+        float speed = rb.linearVelocity.magnitude;
+#else
+        float speed = rb.velocity.magnitude;
+#endif
+
+        if (moved > knockMoveDistance || rot > knockRotateDegrees || speed > knockSpeed)
             isKnockedOver = true;
-        }
     }
 
-    public void ResetPin()
+    public void ResetPin(bool recacheStart = false)
     {
-        transform.position = startPos;
-        transform.rotation = startRot;
+        if (recacheStart) CacheStart();
 
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb)
-        {
-            rb.linearVelocity = Vector2.zero;
-            rb.angularVelocity = 0;
-        }
+        transform.position = startPos;
+        transform.rotation = Quaternion.Euler(0, 0, startZ);
+
+#if UNITY_6000_0_OR_NEWER
+        rb.linearVelocity = Vector2.zero;
+#else
+        rb.velocity = Vector2.zero;
+#endif
+        rb.angularVelocity = 0f;
 
         isKnockedOver = false;
     }
@@ -44,6 +65,6 @@ public class BowlingPin : MonoBehaviour
     {
         gameObject.SetActive(true);
         alreadyScored = false;
-        ResetPin();
+        ResetPin(recacheStart: false);
     }
 }

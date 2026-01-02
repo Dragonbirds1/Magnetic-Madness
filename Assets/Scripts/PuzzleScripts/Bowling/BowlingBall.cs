@@ -1,102 +1,88 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class BowlingBall : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Refs")]
     public Rigidbody2D rb;
-    public Transform arrow;
-    public GameObject player;
-    public GameObject camBowl;
-    public GameObject camFollow;
+    public Transform aimPivot; // optional child that rotates to aim (recommended)
 
-    [Header("Stats")]
-    public float weight = 6f;
-    public float hookStrength = 2f;
-    public float radToStart;
-
-    [Header("Shot")]
-    public float powerStep = 0.5f;
-    public float maxPower = 20f;
+    [Header("Input System (drag these from your InputActions)")]
+    public CustomInput aim;    // set valueAction = Gameplay/Aim
+    public CustomInput throwIn; // set buttonAction = Gameplay/Throw
 
     [Header("Aim")]
-    public float aimRotateSpeed = 120f;
+    public float aimRotateSpeed = 140f;
+    public float minAimAngle = -25f;
+    public float maxAimAngle = 25f;
 
-    [Header("Ball Movement")]
-    public float moveSpeed = 3f;
-    public float laneMinX = -2f;
-    public float laneMaxX = 2f;
+    [Header("Power (press once to charge, press again to throw)")]
+    public float minPower = 4f;
+    public float maxPower = 18f;
+    public float chargeSpeed = 10f;
+    public float power = 8f;
 
-    [Header("Input Actions")]
-    public InputAction moveAction;        // ← NEW (Left / Right)
-    public InputAction aimAction;         // Optional: X axis for aiming
-    public InputAction powerUpAction;
-    public InputAction powerDownAction;
-    public InputAction throwAction;
-    public InputAction togglePlayAction;
+    [Header("Rolling Feel")]
+    public float linearDampingWhileRolling = 0.6f;
+    public float angularDampingAlways = 999f;
+    public float maxSpeed = 22f;
 
-    [HideInInspector] public bool isActive;
-    [HideInInspector] public bool hasBeenThrown;
+    [Header("Hook / Curve")]
+    public float hookStrength = 8f;
+    public float hookResponse = 12f;
+    public float hookMinSpeed = 1.5f;
 
-    private float aimAngle = 90f;
-    private float power = 0f;
+    [Header("State")]
+    public bool hasBeenThrown;
+
+    bool charging;
+    float targetHook;
+    float currentHook;
+
+    void Awake()
+    {
+        if (!rb) rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+
+#if UNITY_6000_0_OR_NEWER
+        rb.linearDamping = 0f;
+        rb.angularDamping = angularDampingAlways;
+#else
+        rb.drag = 0f;
+        rb.angularDrag = angularDampingAlways;
+#endif
+    }
 
     void OnEnable()
     {
-        moveAction.Enable();
-        aimAction.Enable();
-        powerUpAction.Enable();
-        powerDownAction.Enable();
-        throwAction.Enable();
-        togglePlayAction.Enable();
+        aim.Enable();
+        throwIn.Enable();
     }
 
     void OnDisable()
     {
-        moveAction.Disable();
-        aimAction.Disable();
-        powerUpAction.Disable();
-        powerDownAction.Disable();
-        throwAction.Disable();
-        togglePlayAction.Disable();
-    }
-
-    void Awake()
-    {
-        rb.mass = weight;
-        arrow.gameObject.SetActive(false);
-        camBowl.SetActive(false);
-        camFollow.SetActive(false);
+        aim.Disable();
+        throwIn.Disable();
     }
 
     void Update()
     {
-        float playerPos = Vector2.Distance(transform.position, player.transform.position);
-        if (playerPos <= radToStart)
+        if (!hasBeenThrown)
         {
-            if (!hasBeenThrown && togglePlayAction.WasPressedThisFrame())
+            AimStep();
+
+            // tap to toggle charge, tap again to throw
+            if (throwIn.PressedThisFrame())
             {
-                isActive = !isActive;
-                power = 0f;
-                arrow.gameObject.SetActive(false);
+                charging = !charging;
+                if (!charging) Throw();
             }
 
-            if (!isActive || hasBeenThrown) return;
-
-            HandleMovement();
-            HandleAim();
-            HandlePower();
-            UpdateArrow();
-
-            if (throwAction.WasPressedThisFrame())
-                Throw();
-        }
-        else if (playerPos > radToStart && isActive)
-        {
-            isActive = false;
-            power = 0f;
-            arrow.gameObject.SetActive(false);
-            return;
+            if (charging)
+            {
+                power += chargeSpeed * Time.deltaTime;
+                if (power > maxPower) power = minPower; // arcade cycle
+            }
         }
     }
 
@@ -104,95 +90,112 @@ public class BowlingBall : MonoBehaviour
     {
         if (!hasBeenThrown) return;
 
-        if (rb.linearVelocity.magnitude > 0.1f)
-            rb.AddForce(Vector2.right * hookStrength * Time.fixedDeltaTime);
+        // rolling damping
+#if UNITY_6000_0_OR_NEWER
+        rb.linearDamping = linearDampingWhileRolling;
+#else
+        rb.drag = linearDampingWhileRolling;
+#endif
+
+        ClampSpeed();
+        HookStep();
     }
 
-    // ===== LEFT / RIGHT MOVEMENT =====
-    void HandleMovement()
+    void AimStep()
     {
-        float move = moveAction.ReadValue<float>(); // -1 to +1
+        int dir = aim.GetDigital();
+        if (dir == 0) return;
 
-        if (Mathf.Abs(move) < 0.1f) return;
+        Transform pivot = aimPivot ? aimPivot : transform;
 
-        Vector3 pos = transform.position;
-        pos.x += move * moveSpeed * Time.deltaTime;
-        pos.x = Mathf.Clamp(pos.x, laneMinX, laneMaxX);
-        transform.position = pos;
-    }
+        float z = pivot.eulerAngles.z;
+        if (z > 180f) z -= 360f;
 
-    // ===== AIM =====
-    void HandleAim()
-    {
-        float input = aimAction.ReadValue<float>();
+        z += -dir * aimRotateSpeed * Time.deltaTime;
+        z = Mathf.Clamp(z, minAimAngle, maxAimAngle);
 
-        aimAngle += input * aimRotateSpeed * Time.deltaTime;
-        aimAngle = Mathf.Clamp(aimAngle, 30f, 150f);
-    }
-
-    void HandlePower()
-    {
-        if (powerUpAction.IsPressed()) power += powerStep;
-        if (powerDownAction.IsPressed()) power -= powerStep;
-
-        power = Mathf.Clamp(power, 0f, maxPower);
-    }
-
-    void UpdateArrow()
-    {
-        if (power <= 0f)
-        {
-            arrow.gameObject.SetActive(false);
-            return;
-        }
-
-        arrow.gameObject.SetActive(true);
-        arrow.position = transform.position;
-
-        Vector2 dir = AngleToVector(aimAngle);
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-
-        arrow.rotation = Quaternion.Euler(0, 0, angle);
-        arrow.localScale = new Vector3(1, power * 0.1f, 1);
+        pivot.rotation = Quaternion.Euler(0f, 0f, z);
     }
 
     void Throw()
     {
-        if (power <= 0f) return;
-
-        camBowl.SetActive(true);
-        Vector2 dir = AngleToVector(aimAngle);
-        rb.AddForce(dir * power, ForceMode2D.Impulse);
+        Transform pivot = aimPivot ? aimPivot : transform;
+        Vector2 dir = pivot.up.normalized;
 
         hasBeenThrown = true;
-        isActive = false;
-        arrow.gameObject.SetActive(false);
+
+#if UNITY_6000_0_OR_NEWER
+        rb.linearVelocity = dir * power;
+#else
+        rb.velocity = dir * power;
+#endif
+
+        // once thrown, stop charging
+        charging = false;
     }
 
-    Vector2 AngleToVector(float angle)
+    void HookStep()
     {
-        float rad = angle * Mathf.Deg2Rad;
-        return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+        float speed = GetSpeed();
+        if (speed < hookMinSpeed)
+            targetHook = 0f;
+        else
+            targetHook = aim.ReadValue(); // same as aim input (smooth analog)
+
+        currentHook = Mathf.MoveTowards(currentHook, targetHook, hookResponse * Time.fixedDeltaTime);
+
+        Vector2 v = GetVelocity();
+        if (v.sqrMagnitude < 0.0001f) return;
+
+        Vector2 forward = v.normalized;
+        Vector2 right = new Vector2(forward.y, -forward.x);
+
+        rb.AddForce(right * (currentHook * hookStrength), ForceMode2D.Force);
     }
 
-    public void ResetBall(Vector3 startPos)
+    void ClampSpeed()
     {
-        camFollow.SetActive(false);
-        camBowl.SetActive(false);
-        rb.linearVelocity = Vector2.zero;
-        rb.angularVelocity = 0;
-        transform.position = startPos;
+        Vector2 v = GetVelocity();
+        float spd = v.magnitude;
+        if (spd <= maxSpeed) return;
 
+        v = v.normalized * maxSpeed;
+#if UNITY_6000_0_OR_NEWER
+        rb.linearVelocity = v;
+#else
+        rb.velocity = v;
+#endif
+    }
+
+    float GetSpeed() => GetVelocity().magnitude;
+
+    Vector2 GetVelocity()
+    {
+#if UNITY_6000_0_OR_NEWER
+        return rb.linearVelocity;
+#else
+        return rb.velocity;
+#endif
+    }
+
+    public void ResetBall(Vector3 pos)
+    {
         hasBeenThrown = false;
-        isActive = false;
-        power = 0f;
-        aimAngle = 90f;
-    }
+        charging = false;
+        targetHook = 0f;
+        currentHook = 0f;
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, radToStart);
+        transform.position = pos;
+        if (aimPivot) aimPivot.localRotation = Quaternion.identity;
+
+#if UNITY_6000_0_OR_NEWER
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.linearDamping = 0f;
+#else
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.drag = 0f;
+#endif
     }
 }
-

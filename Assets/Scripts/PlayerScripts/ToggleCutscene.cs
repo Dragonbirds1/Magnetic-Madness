@@ -56,6 +56,12 @@ public class ToggleCutscene : MonoBehaviour
     [Tooltip("The mouse UI for player two")]
     public GameObject mouseUI;
 
+    [Header("Audiosources")]
+    [Tooltip("Audio source for main music")]
+    public AudioSource mainMusic;
+    [Tooltip("Audio source for hide music")]
+    public AudioSource hideMusic;
+
     string currentTimeText;
     bool cutscene1TimeActive = false;
     bool cutscene2TimeActive = false;
@@ -66,6 +72,7 @@ public class ToggleCutscene : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        toggleBlock2.SetActive(false);
         cutsceneCam.SetActive(false);
         timeDisplayGameObject.SetActive(false);
         
@@ -101,6 +108,8 @@ public class ToggleCutscene : MonoBehaviour
             cutscene1Time += Time.deltaTime;
             if (cutscene1Time >= 18.333f)
             {
+                toggleBlock2.SetActive(true);
+                mainMusic.UnPause();
                 boarder.SetActive(true);
                 mouseUI.SetActive(true);
                 Cursor.visible = true;
@@ -133,6 +142,7 @@ public class ToggleCutscene : MonoBehaviour
     {
         if (collision.CompareTag("ToggleMe"))
         {
+            mainMusic.Pause();
             boarder.SetActive(false);
             mouseUI.SetActive(false);
             Cursor.visible = false;
@@ -146,6 +156,7 @@ public class ToggleCutscene : MonoBehaviour
 
         if (collision.CompareTag("ToggleMe2"))
         {
+            mainMusic.Pause();
             boarder.SetActive(false);
             mouseUI.SetActive(false);
             Cursor.visible = false;

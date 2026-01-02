@@ -60,12 +60,18 @@ public class SecurityCam : MonoBehaviour
     public AudioClip makeSureSFX;
     public AudioClip alertSFX;
     public AudioClip searchSFX;
+    public AudioSource shutDownSFX;
 
     [Header("Audio Distance Settings")]
     public float maxHearingDistance = 8f;      // for Patrol/Search/MakeSure
     public float alertMaxHearingDistance = 12f; // for Alert
     public float minVolume = 0f;
     public float maxVolume = 1f;
+
+    [Header("Bools")]
+    public bool isDisabled = false;
+
+    private bool isPlaying = false;
 
     IEnumerator Start()
     {
@@ -75,26 +81,39 @@ public class SecurityCam : MonoBehaviour
 
         yield return new WaitForSeconds(startupDelay);
         canDetect = true;
-
         EnterPatrol();
     }
 
     void Update()
     {
-        if (canDetect)
-            HandleDetection();
-
-        switch (currentState)
+        if (isDisabled == false)
         {
-            case CamState.Patrol: Patrol(); break;
-            case CamState.MakeSure: MakeSure(); break;
-            case CamState.Alert: Alert(); break;
-            case CamState.Search: Search(); break;
-        }
+            isPlaying = false;
+            
+            if (canDetect)
+                HandleDetection();
 
-        RotateSmooth();
-        UpdateLight();
-        UpdateVolumeBasedOnDistance();
+            switch (currentState)
+            {
+                case CamState.Patrol: Patrol(); break;
+                case CamState.MakeSure: MakeSure(); break;
+                case CamState.Alert: Alert(); break;
+                case CamState.Search: Search(); break;
+            }
+
+            RotateSmooth();
+            UpdateLight();
+            UpdateVolumeBasedOnDistance();
+        }
+        else if (isDisabled == true)
+        {
+            StopAudio();
+            spotlight.color = Color.clear;
+            if (isPlaying == false) { 
+                shutDownSFX.Play();
+                isPlaying = true;
+            }
+        }
     }
 
     // ================= DETECTION =================
@@ -242,7 +261,7 @@ public class SecurityCam : MonoBehaviour
         hasAlerted = false;
     }
 
-    void EnterPatrol()
+    public void EnterPatrol()
     {
         ExitAlert();
         StopAudio();
@@ -285,7 +304,7 @@ public class SecurityCam : MonoBehaviour
         audioSource.Play();
     }
 
-    void StopAudio()
+    public void StopAudio()
     {
         if (audioSource == null) return;
         audioSource.Stop();

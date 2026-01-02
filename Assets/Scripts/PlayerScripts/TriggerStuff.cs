@@ -62,7 +62,7 @@ public class TriggerStuff : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //keycard.SetActive(false);
+        keycard.SetActive(false);
         keycard2.SetActive(false);
         keycard3.SetActive(false);
         mainMusicTrigger.SetActive(false);

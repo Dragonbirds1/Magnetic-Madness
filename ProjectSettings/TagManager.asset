@@ -59,7 +59,7 @@ TagManager:
   - IsLever
   - IsGolfBall
   - Obstacles
-  - 
+  - IsPin
   - 
   - 
   - 
@@ -125,6 +125,18 @@ TagManager:
     locked: 0
   - name: 111111111
     uniqueID: 1238549801
+    locked: 0
+  - name: 2222222
+    uniqueID: 3050050459
+    locked: 0
+  - name: 3333333
+    uniqueID: 1504009329
+    locked: 0
+  - name: 4444444
+    uniqueID: 3742950491
+    locked: 0
+  - name: 5555555
+    uniqueID: 202159927
     locked: 0
   m_RenderingLayers:
   - Default
