@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using UnityEditor;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class AIEnemyMovement : MonoBehaviour
