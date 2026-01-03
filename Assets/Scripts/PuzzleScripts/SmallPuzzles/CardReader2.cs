@@ -46,6 +46,10 @@ public class CardReader2 : MonoBehaviour
     [Tooltip("Timer for incorrect usage")]
     public float incorrectTimer;
 
+    [Header("KeyCode")]
+    [Tooltip("Key to use the Card Reader")]
+    public KeyCode useCardReaderKey;
+
     bool isCorrect;
     bool isIncorrect;
     private SpriteRenderer m_SpriteRenderer;
@@ -87,7 +91,7 @@ public class CardReader2 : MonoBehaviour
         {
             if (playerPos <= radToCardReader || player2Pos <= radToCardReader)
             {
-                if (Input.GetKeyDown(KeyCode.T))
+                if (Input.GetKeyDown(useCardReaderKey))
                 {
                     if (triggerStuff.keycard2.activeSelf == false && triggerStuff.canClaimCard2 == true)
                     {

@@ -56,15 +56,19 @@ public class BowlingHUDUI : MonoBehaviour
         if (!ball) return;
 
         // -------- show/hide until in range --------
+        bool shouldShow = (!hideUntilInRange) || ball.InRange || ball.hasBeenThrown;
+
         if (rootGroup)
         {
-            bool shouldShow = !hideUntilInRange || ball.InRange || ball.hasBeenThrown;
             float targetA = shouldShow ? 1f : 0f;
-
             rootGroup.alpha = Mathf.MoveTowards(rootGroup.alpha, targetA, showFadeSpeed * Time.unscaledDeltaTime);
             rootGroup.interactable = shouldShow;
             rootGroup.blocksRaycasts = shouldShow;
         }
+
+        // DO NOT stop updating while the ball is rolling
+        if (hideUntilInRange && !ball.InRange && !ball.hasBeenThrown)
+            return;
 
         // If hidden, skip updating visuals (optional)
         if (hideUntilInRange && !ball.InRange && !ball.hasBeenThrown) return;
@@ -90,6 +94,8 @@ public class BowlingHUDUI : MonoBehaviour
             float pulse = ball.InPerfectWindow ? (1f + Mathf.Sin(Time.unscaledTime * 18f) * 0.08f) : 1f;
             perfectBand.localScale = new Vector3(pulse, pulse, 1f);
         }
+
+
 
         // -------- combo UI --------
         int c = ball.combo;

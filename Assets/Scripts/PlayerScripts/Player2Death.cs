@@ -70,6 +70,20 @@ public class Player2Death : MonoBehaviour
             canMove = false;
             playerAnimator.Play("Player2DeathAnim");
         }
+
+        if (collision.gameObject.CompareTag("Lazer") && !isDead)
+        {
+            button1.SetActive(true);
+            button2.SetActive(true);
+            sparkAnimator.enabled = false;
+            playerAbility.enabled = false;
+            abilitySwap.enabled = false;
+            abilitySwap.death = true;
+            playerAbility.dead = true;
+            playerCollider.enabled = false;
+            canMove = false;
+            playerAnimator.Play("Player2DeathAnim");
+        }
     }
 }
 

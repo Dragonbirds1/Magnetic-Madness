@@ -70,6 +70,26 @@ public class Player1Death : MonoBehaviour
             playerCollider.enabled = false;
             playerAnimator.Play("Player1DeathAnim");
         }
+
+        if (collision.gameObject.CompareTag("Lazer") && !isDead)
+        {
+            button1.SetActive(true);
+            button2.SetActive(true);
+            sparkAnimator.enabled = false;
+            playerAbility.enabled = false;
+            abilitySwap.enabled = false;
+            canMove = false;
+            abilitySwap.death = true;
+            playerAbility.dead = true;
+            //boxEnemy.player1IsDead = true;
+            //boxEnemy.patrol = true;
+            //boxEnemy.patrol2 = true;
+            //boxEnemy.patrol3 = true;
+            //boxEnemy.isChasing = false;
+            //boxEnemy.chaseTime = 5.0f;
+            playerCollider.enabled = false;
+            playerAnimator.Play("Player1DeathAnim");
+        }
     }
 }
 

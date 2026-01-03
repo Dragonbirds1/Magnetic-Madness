@@ -9,6 +9,10 @@ public class ToggleCutscene : MonoBehaviour
     [Tooltip("Reference to the HideAndSeekEnemy script")]
     public HideAndSeekEnemy hideAndSeekEnemy;
 
+    [Header("Players")]
+    [Tooltip("References to the player game objects")]
+    public GameObject player1, player2;
+
     [Header("Cutscene")]
     [Tooltip("Animator controlling the cutscene")]
     public Animator cutsceneAnimator;
@@ -62,6 +66,12 @@ public class ToggleCutscene : MonoBehaviour
     [Tooltip("Audio source for hide music")]
     public AudioSource hideMusic;
 
+    [Header("TP2")]
+    [Tooltip("Object that player2 teleports to when cutscene starts")]
+    public GameObject tp2;
+
+    public bool isCutsceneActive = false;
+
     string currentTimeText;
     bool cutscene1TimeActive = false;
     bool cutscene2TimeActive = false;
@@ -72,7 +82,6 @@ public class ToggleCutscene : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        toggleBlock2.SetActive(false);
         cutsceneCam.SetActive(false);
         timeDisplayGameObject.SetActive(false);
         
@@ -108,6 +117,7 @@ public class ToggleCutscene : MonoBehaviour
             cutscene1Time += Time.deltaTime;
             if (cutscene1Time >= 18.333f)
             {
+                isCutsceneActive = false;
                 toggleBlock2.SetActive(true);
                 mainMusic.UnPause();
                 boarder.SetActive(true);
@@ -125,6 +135,7 @@ public class ToggleCutscene : MonoBehaviour
             cutscene2Time += Time.deltaTime;
             if (cutscene2Time >= 38.750f)
             {
+                isCutsceneActive = false;
                 boarder.SetActive(true);
                 mouseUI.SetActive(true);
                 Cursor.visible = true;
@@ -142,6 +153,10 @@ public class ToggleCutscene : MonoBehaviour
     {
         if (collision.CompareTag("ToggleMe"))
         {
+            // Teleport player 2 to tp2 location
+            player2.transform.position = tp2.transform.position;
+            // Disable player 2 and player 1 movement temporarily
+            isCutsceneActive = true;
             mainMusic.Pause();
             boarder.SetActive(false);
             mouseUI.SetActive(false);
@@ -156,6 +171,8 @@ public class ToggleCutscene : MonoBehaviour
 
         if (collision.CompareTag("ToggleMe2"))
         {
+            // Disable player 2 and player 1 movement temporarily
+            isCutsceneActive = true;
             mainMusic.Pause();
             boarder.SetActive(false);
             mouseUI.SetActive(false);

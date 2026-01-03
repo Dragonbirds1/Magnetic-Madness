@@ -36,6 +36,11 @@ public class BowlingAimLineVFX : MonoBehaviour
 
     void LateUpdate()
     {
+        if (ball.InRange == false)
+        {
+            lr.enabled = false;
+            return;
+        }
         if (!ball)
         {
             lr.enabled = false;

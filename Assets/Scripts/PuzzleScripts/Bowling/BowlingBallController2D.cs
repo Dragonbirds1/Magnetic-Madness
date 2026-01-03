@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -83,6 +84,7 @@ public class BowlingBallController2D : MonoBehaviour
 
     [Header("VFX")]
     public ParticleSystem throwDust;
+    public ParticleSystem throwDustBig;
     public ParticleSystem perfectCorePop;
     public ParticleSystem perfectStreaks;
     public TrailRenderer trail;
@@ -116,6 +118,12 @@ public class BowlingBallController2D : MonoBehaviour
     bool isStopped;
     public bool IsStopped => isStopped;
 
+    [Header("BowlingBallStopSystem")]
+    public GameObject stopSystemObject;
+    public GameObject stopSystemObject2;
+    public GameObject stopSystemObject3;
+    public GameObject stopSystemObject4;
+
     // power internals
     float power;
     float chargeDir = 1f;
@@ -126,6 +134,11 @@ public class BowlingBallController2D : MonoBehaviour
 
     void Awake()
     {
+        stopSystemObject.SetActive(false);
+        stopSystemObject2.SetActive(false);
+        stopSystemObject3.SetActive(false);
+        stopSystemObject4.SetActive(false);
+
         if (!rb) rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
 
@@ -273,6 +286,11 @@ public class BowlingBallController2D : MonoBehaviour
         InPerfectWindow = false;
         PerfectJustTriggeredThisFrame = false;
 
+        stopSystemObject.SetActive(false);
+        stopSystemObject2.SetActive(false);
+        stopSystemObject3.SetActive(false);
+        stopSystemObject4.SetActive(false);
+
         // stop system reset
         isStopped = false;
         stopTimer = 0f;
@@ -306,6 +324,8 @@ public class BowlingBallController2D : MonoBehaviour
         if (followCam && defaultCamTarget)
             followCam.target = defaultCamTarget;
     }
+
+
 
     // ==========================
     // Throw + Perfect
@@ -354,6 +374,7 @@ public class BowlingBallController2D : MonoBehaviour
 #endif
 
         if (throwDust) throwDust.Play();
+        if (throwDustBig) throwDustBig.Play();
         if (trail) trail.emitting = true;
 
         if (perfect) TriggerPerfectRelease();
@@ -460,11 +481,13 @@ public class BowlingBallController2D : MonoBehaviour
         return a.WasPressedThisFrame();
     }
 
-    void FreezePhysics()
-    {
-        if (isFrozen) return;
+    // ======== HARD STOP API (manager uses these) ========
+    public bool IsFrozen { get; private set; }
 
-        // zero motion first
+    public void FreezePhysics()
+    {
+        if (IsFrozen) return;
+
 #if UNITY_6000_0_OR_NEWER
         rb.linearVelocity = Vector2.zero;
 #else
@@ -472,19 +495,17 @@ public class BowlingBallController2D : MonoBehaviour
 #endif
         rb.angularVelocity = 0f;
 
-        // this is the "can't be pushed anymore" part
-        rb.simulated = false;   // ✅ forces stop even if other scripts AddForce
-        isFrozen = true;
+        rb.simulated = false;   // <-- nuclear stop
+        IsFrozen = true;
     }
 
-    void UnfreezePhysics()
+    public void UnfreezePhysics()
     {
-        if (!isFrozen) return;
+        if (!IsFrozen) return;
 
         rb.simulated = true;
-        isFrozen = false;
+        IsFrozen = false;
 
-        // make sure we're clean
 #if UNITY_6000_0_OR_NEWER
         rb.linearVelocity = Vector2.zero;
 #else
@@ -552,6 +573,14 @@ public class BowlingBallController2D : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D col)
     {
+        if (col.gameObject.CompareTag("Pin"))
+        {
+            stopSystemObject.SetActive(true);
+            stopSystemObject2.SetActive(true);
+            stopSystemObject3.SetActive(true);
+            stopSystemObject4.SetActive(true);
+        }
+
         if (!stopAfterHittingPins) return;
         if (!hasBeenThrown) return;
         if (hasHitPins) return;
@@ -565,5 +594,4 @@ public class BowlingBallController2D : MonoBehaviour
         if (stopAfterPinsRoutine != null) StopCoroutine(stopAfterPinsRoutine);
         stopAfterPinsRoutine = StartCoroutine(StopSoonAfterPins());
     }
-
 }

@@ -67,4 +67,10 @@ public class BowlingPin : MonoBehaviour
         alreadyScored = false;
         ResetPin(recacheStart: false);
     }
+
+    public bool IsStanding()
+    {
+        return gameObject.activeInHierarchy && !isKnockedOver;
+    }
+
 }

@@ -1,53 +1,91 @@
 ﻿using UnityEngine;
 
-public class BowlingGameManager2DTopDown : MonoBehaviour
+public class BowlingGameManager2D_TopDown : MonoBehaviour
 {
+    [Header("Refs")]
     public BowlingBallController2D ball;
     public Transform ballSpawn;
     public BowlingPin[] pins;
     public BowlingScoreManager score;
-    public BowlingStrikeJuice strikeJuice;
+    public BowlingStrikeJuice strikeJuice; // optional
 
-    [Header("Ball Stop Detection")]
-    public float stopSpeed = 0.08f;   // how slow = stopped
-    public float stopDelay = 0.6f;   // wait before scoring
+    [Header("Roll end detection")]
+    public float stopSpeed = 0.08f;          // near-stopped threshold
+    public float stopHoldTime = 0.25f;       // must stay slow this long
+    public float settleDelayBeforeScore = 0.55f; // let pins finish falling
 
+    float stopTimer;
+    bool scoring;
 
     int rollInFrame = 1;
-    bool rollScored;
+    int standingBeforeRoll = 10;
 
     void Start()
     {
-        ResetPinsForNewFrame();
+        StartNewFrame();
         ball.ResetBall(ballSpawn.position);
     }
 
     void Update()
     {
-        if (!ball.hasBeenThrown) return;
+        if (!ball.hasBeenThrown || scoring) return;
 
-        float speed;
+        float speed = GetBallSpeed();
 
-#if UNITY_6000_0_OR_NEWER
-        speed = ball.rb.linearVelocity.magnitude;
-#else
-    speed = ball.rb.velocity.magnitude;
-#endif
-
-        if (!rollScored && speed < stopSpeed)
+        if (speed < stopSpeed)
         {
-            rollScored = true;
-            ball.StopBallImmediate();          // HARD STOP
-            Invoke(nameof(ScoreRoll), stopDelay);
+            stopTimer += Time.deltaTime;
+
+            if (stopTimer >= stopHoldTime)
+            {
+                scoring = true;
+
+                // Freeze now so nothing keeps pushing the ball/pins weirdly
+                ball.FreezePhysics();
+
+                Invoke(nameof(ScoreRoll), settleDelayBeforeScore);
+            }
         }
+        else
+        {
+            stopTimer = 0f;
+        }
+    }
+
+    float GetBallSpeed()
+    {
+#if UNITY_6000_0_OR_NEWER
+        return ball.rb.linearVelocity.magnitude;
+#else
+        return ball.rb.velocity.magnitude;
+#endif
+    }
+
+    void OnEnable()
+    {
+        stopTimer = 0f;
+        scoring = false;
+    }
+
+    // Call this from your throw (optional). If you don't want to, we auto-calc below.
+    void BeginRollSnapshot()
+    {
+        standingBeforeRoll = CountStandingPins();
     }
 
     void ScoreRoll()
     {
-        int knockedThisRoll = CountNewlyKnockedPins();
+        // If we never snapshotted, do it right now using "pins standing before throw"
+        // (fallback: assumes full rack on first roll)
+        if (rollInFrame == 1 && standingBeforeRoll == 0) standingBeforeRoll = 10;
+
+        int standingAfter = CountStandingPins();
+        int knockedThisRoll = Mathf.Clamp(standingBeforeRoll - standingAfter, 0, 10);
+
         score.RegisterRoll(knockedThisRoll);
 
-        bool strike = (rollInFrame == 1 && knockedThisRoll == 10);
+        bool strike = (rollInFrame == 1 && standingAfter == 0);
+        bool spare = (rollInFrame == 2 && standingAfter == 0);
 
         if (strike)
         {
@@ -55,55 +93,73 @@ public class BowlingGameManager2DTopDown : MonoBehaviour
             if (strikeJuice) strikeJuice.TriggerStrike();
             AdvanceFrame();
         }
-
         else if (rollInFrame == 2)
         {
-            ball.ResetCombo();       // optional: reset combo on non-strike frame end
+            if (!spare) ball.ResetCombo();
             AdvanceFrame();
         }
         else
         {
             rollInFrame = 2;
-            PrepareForSecondRoll();
+            PrepareSecondRoll();
         }
 
-        // ✅ This is what makes your reset work
+        // Reset ball for next roll
+        ball.UnfreezePhysics();
         ball.ResetBall(ballSpawn.position);
-        rollScored = false;
+
+        // Reset roll-end tracking
+        stopTimer = 0f;
+        scoring = false;
+
+        // Snapshot next roll
+        standingBeforeRoll = CountStandingPins();
     }
 
-    int CountNewlyKnockedPins()
+    void StartNewFrame()
     {
-        int count = 0;
-        foreach (var p in pins)
-        {
-            if (p.isKnockedOver && !p.alreadyScored)
-            {
-                p.alreadyScored = true;
-                count++;
-            }
-        }
-        return count;
-    }
-
-    void PrepareForSecondRoll()
-    {
-        foreach (var p in pins)
-        {
-            if (p.alreadyScored) p.gameObject.SetActive(false);
-            else p.ResetPin();
-        }
+        rollInFrame = 1;
+        ResetPinsForNewFrame();
+        standingBeforeRoll = CountStandingPins();
     }
 
     void AdvanceFrame()
     {
-        rollInFrame = 1;
-        ResetPinsForNewFrame();
+        StartNewFrame();
+    }
+
+    void PrepareSecondRoll()
+    {
+        // Keep only standing pins, reset their moved drift
+        foreach (var p in pins)
+        {
+            if (p.IsStanding())
+            {
+                p.ResetPin();
+            }
+            else
+            {
+                p.gameObject.SetActive(false);
+            }
+        }
+
+        standingBeforeRoll = CountStandingPins();
     }
 
     void ResetPinsForNewFrame()
     {
         foreach (var p in pins)
             p.ResetForNewFrame();
+    }
+
+    int CountStandingPins()
+    {
+        int count = 0;
+        foreach (var p in pins)
+        {
+            if (!p.gameObject.activeInHierarchy) continue;
+            if (p.IsStanding()) count++;
+        }
+        return count;
     }
 }
