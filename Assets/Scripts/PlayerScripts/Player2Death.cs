@@ -51,7 +51,7 @@ public class Player2Death : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") && !isDead)
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Lazer") && !isDead)
         {
             button1.SetActive(true);
             button2.SetActive(true);
@@ -67,20 +67,6 @@ public class Player2Death : MonoBehaviour
             //boxEnemy.patrol3 = true;
             //boxEnemy.isChasing = false;
             //boxEnemy.chaseTime = 5.0f;
-            canMove = false;
-            playerAnimator.Play("Player2DeathAnim");
-        }
-
-        if (collision.gameObject.CompareTag("Lazer") && !isDead)
-        {
-            button1.SetActive(true);
-            button2.SetActive(true);
-            sparkAnimator.enabled = false;
-            playerAbility.enabled = false;
-            abilitySwap.enabled = false;
-            abilitySwap.death = true;
-            playerAbility.dead = true;
-            playerCollider.enabled = false;
             canMove = false;
             playerAnimator.Play("Player2DeathAnim");
         }
