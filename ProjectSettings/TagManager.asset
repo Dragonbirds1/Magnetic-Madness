@@ -141,5 +141,8 @@ TagManager:
   - name: 5555555
     uniqueID: 202159927
     locked: 0
+  - name: FactoryStalker
+    uniqueID: 890037971
+    locked: 0
   m_RenderingLayers:
   - Default
