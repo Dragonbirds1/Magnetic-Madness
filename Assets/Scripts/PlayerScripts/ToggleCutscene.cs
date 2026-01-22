@@ -65,6 +65,8 @@ public class ToggleCutscene : MonoBehaviour
     public AudioSource mainMusic;
     [Tooltip("Audio source for hide music")]
     public AudioSource hideMusic;
+    [Tooltip("Audio source for run music")]
+    public AudioSource runMusic;
 
     [Header("TP2")]
     [Tooltip("Object that player2 teleports to when cutscene starts")]
@@ -82,6 +84,7 @@ public class ToggleCutscene : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        runMusic.Stop();
         cutsceneCam.SetActive(false);
         timeDisplayGameObject.SetActive(false);
         
@@ -145,6 +148,8 @@ public class ToggleCutscene : MonoBehaviour
                 cutscene2Time = 0f;
                 cutscene2TimeActive = false;
                 startCountdown = true;
+                hideMusic.Stop();
+                runMusic.Play();
             }
         }
     }

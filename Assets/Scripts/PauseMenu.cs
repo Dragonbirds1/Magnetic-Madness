@@ -9,9 +9,11 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject pauseMenuUI;
 
+    public KeyCode pauseKey;
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(pauseKey))
         {
             if (GameIsPaused)
             {
